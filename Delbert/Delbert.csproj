@@ -77,6 +77,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -100,10 +101,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Components\ISelectRootDirectoryViewModel.cs" />
+    <Compile Include="Components\Notebook\IListNotebooksViewModel.cs" />
     <Compile Include="Components\Notebook\ListNotebooksView.xaml.cs">
       <DependentUpon>ListNotebooksView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\Notebook\ListNotebooksViewModel.cs" />
+    <Compile Include="Components\SelectRootDirectoryView.xaml.cs">
+      <DependentUpon>SelectRootDirectoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\SelectRootDirectoryViewModel.cs" />
+    <Compile Include="Infrastructure\Abstract\ConductorViewModel.cs" />
+    <Compile Include="Infrastructure\Abstract\IConductorViewModel.cs" />
+    <Compile Include="Infrastructure\Abstract\IScreenViewModel.cs" />
+    <Compile Include="Infrastructure\Abstract\IViewModelBase.cs" />
+    <Compile Include="Infrastructure\Abstract\ScreenViewModel.cs" />
     <Compile Include="Infrastructure\ActorEntry.cs" />
     <Compile Include="Infrastructure\ActorEntryExtensions.cs" />
     <Compile Include="Infrastructure\ActorRegistry.cs" />
@@ -114,6 +126,9 @@
     <Compile Include="Infrastructure\IActorSelectionAdapter.cs" />
     <Compile Include="Infrastructure\IActorSystemAdapter.cs" />
     <Compile Include="Infrastructure\LoggingReceiveActor.cs" />
+    <Compile Include="Messages\NewRootDirectorySet.cs" />
+    <Compile Include="Services\RootDirectoryActor.cs" />
+    <Compile Include="Services\NotebookActor.cs" />
     <Compile Include="Shell\Abstract\IMainViewModel.cs" />
     <Compile Include="Shell\Abstract\IShellViewModel.cs" />
     <Compile Include="Shell\MainView.xaml.cs">
@@ -131,8 +146,6 @@
     <Compile Include="Infrastructure\Abstract\IIoC.cs" />
     <Compile Include="Infrastructure\Abstract\IJsonAdapter.cs" />
     <Compile Include="Infrastructure\Abstract\IMessageSubscriber.cs" />
-    <Compile Include="Infrastructure\Abstract\IViewModelBase.cs" />
-    <Compile Include="Infrastructure\Abstract\ViewModelBase.cs" />
     <Compile Include="Infrastructure\Exceptions\InvalidParameterException.cs" />
     <Compile Include="Infrastructure\IoC.cs" />
     <Compile Include="Infrastructure\ItemChangeAwareObservableCollection.cs" />
@@ -153,6 +166,10 @@
     <Compile Include="Infrastructure\NotifyPropertyChangedBase.cs" />
     <Compile Include="Infrastructure\XamlHelpers.cs" />
     <Page Include="Components\Notebook\ListNotebooksView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\SelectRootDirectoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -200,7 +217,6 @@
     <Folder Include="Components\Editor\" />
     <Folder Include="Components\Page\" />
     <Folder Include="Components\Section\" />
-    <Folder Include="Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

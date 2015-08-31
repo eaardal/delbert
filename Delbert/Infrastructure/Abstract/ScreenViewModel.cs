@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using Caliburn.Micro;
@@ -6,14 +6,14 @@ using Delbert.Infrastructure.Logging.Contracts;
 
 namespace Delbert.Infrastructure.Abstract
 {
-    public abstract class ViewModelBase : Conductor<IScreen>, IViewModelBase
+    public abstract class ScreenViewModel : Screen, IScreenViewModel
     {
-        protected IIoC IoC { get; }
-        protected IWindowManager WindowManager { get; }
-        protected IMessageBus MessageBus { get; }
-        protected ILogger Logger { get; }
+        public IIoC IoC { get; }
+        public IWindowManager WindowManager { get; }
+        public IMessageBus MessageBus { get; }
+        public ILogger Logger { get; }
 
-        protected ViewModelBase(IIoC ioc, IWindowManager windowManager, IMessageBus messageBus, ILogger logger)
+        protected ScreenViewModel(IIoC ioc, IWindowManager windowManager, IMessageBus messageBus, ILogger logger)
         {
             if (ioc == null) throw new ArgumentNullException(nameof(ioc));
             if (windowManager == null) throw new ArgumentNullException(nameof(windowManager));
@@ -26,26 +26,26 @@ namespace Delbert.Infrastructure.Abstract
             Logger = logger;
         }
 
-        protected ViewModelBase(IIoC ioc, IWindowManager windowManager) : this(ioc, windowManager, ioc.Resolve<IMessageBus>(), ioc.Resolve<ILogger>()) { }
+        protected ScreenViewModel(IIoC ioc, IWindowManager windowManager) : this(ioc, windowManager, ioc.Resolve<IMessageBus>(), ioc.Resolve<ILogger>()) { }
 
-        protected ViewModelBase(IIoC ioc) :this(ioc, ioc.Resolve<IWindowManager>()) { }
+        protected ScreenViewModel(IIoC ioc) :this(ioc, ioc.Resolve<IWindowManager>()) { }
 
-        protected void ShowWindow<TViewModel>()
+        public void ShowWindow<TViewModel>()
         {
             WindowManager.ShowWindow(IoC.Resolve<TViewModel>());
         }
 
-        protected void ShowWindow<TViewModel>(TViewModel viewModel)
+        public void ShowWindow<TViewModel>(TViewModel viewModel)
         {
             WindowManager.ShowWindow(viewModel);
         }
 
-        protected void DoOnUiDispatcher(System.Action action)
+        public void DoOnUiDispatcher(System.Action action)
         {
             Application.Current.Dispatcher.Invoke(action);
         }
 
-        protected async Task DoOnUiDispatcherAsync(System.Action action)
+        public async Task DoOnUiDispatcherAsync(System.Action action)
         {
             await Task.Run(() => DoOnUiDispatcher(action));
         }

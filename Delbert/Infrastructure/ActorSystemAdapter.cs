@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Akka.Actor;
 using Akka.Dispatch;
+using Akka.DI.Core;
 using Akka.Event;
 using Akka.Serialization;
 
@@ -199,7 +200,12 @@ namespace Delbert.Infrastructure
         {
             return _actorSystem.ActorOf(props, name);
         }
-
+        
+        public IActorRef ActorOf<TProps>(ActorEntry actor) where TProps : ActorBase
+        {
+            return _actorSystem.ActorOf(_actorSystem.DI().Props<TProps>(), actor.Name);
+        }
+        
         public ActorSelection ActorSelection(Akka.Actor.ActorPath actorPath)
         {
             return _actorSystem.ActorSelection(actorPath);

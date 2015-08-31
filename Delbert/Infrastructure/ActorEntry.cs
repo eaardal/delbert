@@ -1,10 +1,13 @@
-﻿namespace Delbert.Infrastructure
+﻿using Akka.Actor;
+
+namespace Delbert.Infrastructure
 {
     public class ActorEntry
     {
         public string Name { get; private set; }
         public string AbsoluteUrl { get; private set; }
         public string RelativeUrl { get; private set; }
+        public Props Props { get; private set; }
 
         public ActorEntry(string name, string absoluteUrl, string relativeUrl)
         {
@@ -17,9 +20,10 @@
             
         }
 
-        public ActorEntry(string name)
+        public ActorEntry(string name, Props props)
         {
             Name = name;
+            Props = props;
         }
 
         public ActorEntry WithName(string name)

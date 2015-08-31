@@ -12,9 +12,9 @@ using Delbert.Infrastructure;
 
 namespace Delbert.Startup
 {
-    public class AkkaBootstrapper
+    public class AkkaConfig
     {
-        public static void Wire(IContainer container)
+        public static void Configure(IContainer container)
         {
             var system = CreateActorSystem();
 
@@ -30,6 +30,7 @@ namespace Delbert.Startup
 
             var actorSystemAdapter = container.Resolve<IActorSystemAdapter>(new TypedParameter(typeof(ActorSystem), system));
             builder.RegisterInstance(actorSystemAdapter).AsImplementedInterfaces().SingleInstance();
+            builder.RegisterInstance(system).AsSelf().SingleInstance();
 
             //builder.RegisterActor<ServerConnector>(system, propsResolver, ActorRegistry.Client.ServerConnector);
 
@@ -40,9 +41,9 @@ namespace Delbert.Startup
 
         private static void ResolveAllActorsOnce(IContainer container)
         {
-            container.ResolveNamed<IActorRef>(ActorRegistry.Client.ServerConnector.Name);
-            container.ResolveNamed<IActorRef>(ActorRegistry.Client.Lobby.Name);
-            container.ResolveNamed<IActorRef>(ActorRegistry.Client.GameLobby.Name);
+            //container.ResolveNamed<IActorRef>(ActorRegistry.Client.ServerConnector.Name);
+            //container.ResolveNamed<IActorRef>(ActorRegistry.Client.Lobby.Name);
+            //container.ResolveNamed<IActorRef>(ActorRegistry.Client.GameLobby.Name);
         }
 
         private static ActorSystem CreateActorSystem()

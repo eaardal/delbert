@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Delbert.Infrastructure.Abstract;
 
 namespace Delbert.Components.Notebook
 {
-    class ListNotebooksViewModel
+    class ListNotebooksViewModel : ScreenViewModel, IListNotebooksViewModel
     {
+        public ListNotebooksViewModel(IIoC ioc) : base(ioc)
+        {
+        }
     }
 }

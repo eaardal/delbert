@@ -38,9 +38,9 @@ namespace Delbert.Startup
             base.Configure();
 
             EnforceNamespaceConvention = true;
-            ViewModelBaseType = typeof(ViewModelBase);
+            ViewModelBaseType = typeof(IViewModelBase);
             
-            DelbertConfig.Konfigurer(Container);
+            DelbertConfig.ConfigureApplication(Container);
         }
 
         protected override IEnumerable<Assembly> SelectAssemblies()

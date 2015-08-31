@@ -32,10 +32,12 @@ namespace Delbert.Startup
             builder.RegisterType<MessageBus>().As<IMessageBus>().SingleInstance();
         }
         
-        public static void Konfigurer(IContainer container)
+        public static void ConfigureApplication(IContainer container)
         {
             var ioc = container.Resolve<IIoC>();
             ioc.RegisterContainer(container);
+
+            AkkaConfig.Configure(container);
 
             var messageBus = ioc.Resolve<IMessageBus>();
 
