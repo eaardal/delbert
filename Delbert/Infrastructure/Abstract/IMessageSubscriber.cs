@@ -1,4 +1,4 @@
-namespace Delbert.Infrastructure.Abstrakt
+namespace Delbert.Infrastructure.Abstract
 {
     public interface IMessageSubscriber
     {

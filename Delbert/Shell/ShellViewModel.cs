@@ -1,5 +1,6 @@
 ﻿using System;
 using Caliburn.Micro;
+using Delbert.Shell.Abstract;
 
 namespace Delbert.Shell
 {
@@ -11,7 +12,7 @@ namespace Delbert.Shell
         {
             if (mainViewModel == null) throw new ArgumentNullException(nameof(mainViewModel));
             
-            DisplayName = "Matmons";
+            DisplayName = "Delbert";
 
             ActivateItem(mainViewModel);
 

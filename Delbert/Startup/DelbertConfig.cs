@@ -2,7 +2,7 @@
 using System.Reflection;
 using Autofac;
 using Delbert.Infrastructure;
-using Delbert.Infrastructure.Abstrakt;
+using Delbert.Infrastructure.Abstract;
 using Delbert.Infrastructure.Logging;
 using Delbert.Infrastructure.Logging.Contracts;
 using Delbert.Infrastructure.Logging.LogFactories;

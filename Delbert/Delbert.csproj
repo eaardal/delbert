@@ -35,6 +35,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Akka, Version=1.0.4.12, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Akka.1.0.4\lib\net45\Akka.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Akka.DI.AutoFac, Version=1.0.4.12, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Akka.DI.AutoFac.1.0.4\lib\net45\Akka.DI.AutoFac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Akka.DI.Core, Version=1.0.4.12, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Akka.DI.Core.1.0.4\lib\net45\Akka.DI.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
       <Private>True</Private>
@@ -49,6 +61,10 @@
     </Reference>
     <Reference Include="Caliburn.Micro.Platform, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
       <HintPath>..\packages\Caliburn.Micro.2.0.2\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Serilog, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
@@ -84,8 +100,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Shell\IMainViewModel.cs" />
-    <Compile Include="Shell\IShellViewModel.cs" />
+    <Compile Include="Components\Notebook\ListNotebooksView.xaml.cs">
+      <DependentUpon>ListNotebooksView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Notebook\ListNotebooksViewModel.cs" />
+    <Compile Include="Infrastructure\ActorEntry.cs" />
+    <Compile Include="Infrastructure\ActorEntryExtensions.cs" />
+    <Compile Include="Infrastructure\ActorRegistry.cs" />
+    <Compile Include="Infrastructure\ActorSystemAdapter.cs" />
+    <Compile Include="Infrastructure\ActorSystemExtensions.cs" />
+    <Compile Include="Infrastructure\AutofacExtensions.cs" />
+    <Compile Include="Infrastructure\ByteArrayExtensions.cs" />
+    <Compile Include="Infrastructure\IActorSelectionAdapter.cs" />
+    <Compile Include="Infrastructure\IActorSystemAdapter.cs" />
+    <Compile Include="Infrastructure\LoggingReceiveActor.cs" />
+    <Compile Include="Shell\Abstract\IMainViewModel.cs" />
+    <Compile Include="Shell\Abstract\IShellViewModel.cs" />
+    <Compile Include="Shell\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Shell\MainViewModel.cs" />
     <Compile Include="Shell\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
@@ -94,11 +128,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Infrastructure\Abstrakt\IIoC.cs" />
-    <Compile Include="Infrastructure\Abstrakt\IJsonAdapter.cs" />
-    <Compile Include="Infrastructure\Abstrakt\IMessageSubscriber.cs" />
-    <Compile Include="Infrastructure\Abstrakt\IViewModelBase.cs" />
-    <Compile Include="Infrastructure\Abstrakt\ViewModelBase.cs" />
+    <Compile Include="Infrastructure\Abstract\IIoC.cs" />
+    <Compile Include="Infrastructure\Abstract\IJsonAdapter.cs" />
+    <Compile Include="Infrastructure\Abstract\IMessageSubscriber.cs" />
+    <Compile Include="Infrastructure\Abstract\IViewModelBase.cs" />
+    <Compile Include="Infrastructure\Abstract\ViewModelBase.cs" />
     <Compile Include="Infrastructure\Exceptions\InvalidParameterException.cs" />
     <Compile Include="Infrastructure\IoC.cs" />
     <Compile Include="Infrastructure\ItemChangeAwareObservableCollection.cs" />
@@ -118,12 +152,21 @@
     <Compile Include="Infrastructure\MessageBus.cs" />
     <Compile Include="Infrastructure\NotifyPropertyChangedBase.cs" />
     <Compile Include="Infrastructure\XamlHelpers.cs" />
+    <Page Include="Components\Notebook\ListNotebooksView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Shell\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Shell\ShellView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Startup\AkkaConfig.cs" />
     <Compile Include="Startup\CaliburnAutofacConfig.cs" />
     <Compile Include="Startup\DelbertConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -152,6 +195,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Components\Editor\" />
+    <Folder Include="Components\Page\" />
+    <Folder Include="Components\Section\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

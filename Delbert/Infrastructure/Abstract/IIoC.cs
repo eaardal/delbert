@@ -1,7 +1,7 @@
 ﻿using System;
 using Autofac;
 
-namespace Delbert.Infrastructure.Abstrakt
+namespace Delbert.Infrastructure.Abstract
 {
     public interface IIoC
     {

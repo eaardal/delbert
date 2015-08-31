@@ -4,7 +4,7 @@ using System.Windows;
 using Caliburn.Micro;
 using Delbert.Infrastructure.Logging.Contracts;
 
-namespace Delbert.Infrastructure.Abstrakt
+namespace Delbert.Infrastructure.Abstract
 {
     public abstract class ViewModelBase : Conductor<IScreen>, IViewModelBase
     {

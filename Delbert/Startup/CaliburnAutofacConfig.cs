@@ -9,7 +9,7 @@ using Autofac;
 using Caliburn.Micro;
 using Caliburn.Micro.Autofac;
 using Delbert.Infrastructure;
-using Delbert.Infrastructure.Abstrakt;
+using Delbert.Infrastructure.Abstract;
 using Delbert.Shell;
 
 namespace Delbert.Startup

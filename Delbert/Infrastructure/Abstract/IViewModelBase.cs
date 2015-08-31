@@ -1,6 +1,6 @@
 ﻿using Caliburn.Micro;
 
-namespace Delbert.Infrastructure.Abstrakt
+namespace Delbert.Infrastructure.Abstract
 {
     public interface IViewModelBase : IConductor, IScreen
     {

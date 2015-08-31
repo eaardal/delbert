@@ -1,6 +1,6 @@
 ﻿using System;
 using Autofac;
-using Delbert.Infrastructure.Abstrakt;
+using Delbert.Infrastructure.Abstract;
 
 namespace Delbert.Infrastructure
 {

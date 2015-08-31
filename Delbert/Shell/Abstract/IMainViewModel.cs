@@ -1,6 +1,6 @@
 ﻿using Caliburn.Micro;
 
-namespace Delbert.Shell
+namespace Delbert.Shell.Abstract
 {
     internal interface IMainViewModel : IScreen
     {
