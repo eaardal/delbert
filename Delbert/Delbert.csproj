@@ -122,11 +122,13 @@
     <Compile Include="Infrastructure\Abstract\ScreenViewModel.cs" />
     <Compile Include="Infrastructure\ActorEntry.cs" />
     <Compile Include="Infrastructure\ActorEntryExtensions.cs" />
+    <Compile Include="Infrastructure\ActorRefExtensions.cs" />
     <Compile Include="Infrastructure\ActorRegistry.cs" />
     <Compile Include="Infrastructure\ActorSystemAdapter.cs" />
     <Compile Include="Infrastructure\ActorSystemExtensions.cs" />
     <Compile Include="Infrastructure\AutofacExtensions.cs" />
     <Compile Include="Infrastructure\ByteArrayExtensions.cs" />
+    <Compile Include="Infrastructure\Exceptions\UnexpectedActorAnswer.cs" />
     <Compile Include="Infrastructure\IActorSelectionAdapter.cs" />
     <Compile Include="Infrastructure\IActorSystemAdapter.cs" />
     <Compile Include="Infrastructure\LoggingReceiveActor.cs" />
