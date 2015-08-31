@@ -14,11 +14,11 @@ namespace Delbert.Infrastructure
             switch (path)
             {
                 case ActorPathType.Absolute:
-                    return actorSystem.ActorSelection(actorEntry.AbsoluteUrl);
+                    return actorSystem.ActorSelection(actorEntry.AbsoluteUri);
                 case ActorPathType.Relative:
-                    return actorSystem.ActorSelection(actorEntry.RelativeUrl);
+                    return actorSystem.ActorSelection(actorEntry.RelativeUri);
                 default:
-                    return actorSystem.ActorSelection(actorEntry.AbsoluteUrl);
+                    return actorSystem.ActorSelection(actorEntry.AbsoluteUri);
             }
         }
 
@@ -27,11 +27,24 @@ namespace Delbert.Infrastructure
             switch (path)
             {
                 case ActorPathType.Absolute:
-                    return actorSystem.ActorSelection(actorEntry.AbsoluteUrl);
+                    return actorSystem.ActorSelection(actorEntry.AbsoluteUri);
                 case ActorPathType.Relative:
-                    return actorSystem.ActorSelection(actorEntry.RelativeUrl);
+                    return actorSystem.ActorSelection(actorEntry.RelativeUri);
                 default:
-                    return actorSystem.ActorSelection(actorEntry.AbsoluteUrl);
+                    return actorSystem.ActorSelection(actorEntry.AbsoluteUri);
+            }
+        }
+
+        public static ActorSelection ActorSelection(this IUntypedActorContext context, ActorEntry actor, ActorPathType path = ActorPathType.Absolute)
+        {
+            switch (path)
+            {
+                case ActorPathType.Absolute:
+                    return context.ActorSelection(actor.AbsoluteUri);
+                case ActorPathType.Relative:
+                    return context.ActorSelection(actor.RelativeUri);
+                default:
+                    return context.ActorSelection(actor.AbsoluteUri);
             }
         }
     }

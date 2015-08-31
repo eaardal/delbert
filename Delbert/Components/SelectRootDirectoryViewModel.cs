@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Akka.Actor;
-using Akka.DI.Core;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Abstract;
 using Delbert.Services;
@@ -38,11 +33,11 @@ namespace Delbert.Components
         {
             var dialog = new FolderBrowserDialog();
 
-            var result = dialog.ShowDialog();
+            dialog.ShowDialog();
             
             var directory = dialog.SelectedPath.ToDirectoryInfo();
 
-            var rootDirectory = _actorSystem.ActorOf<RootDirectoryActor>(ActorRegistry.RootDirectory);
+            var rootDirectory = _actorSystem.ActorSelection(ActorRegistry.RootDirectory);
             rootDirectory.Tell(new RootDirectoryActor.SetRootDirectory(directory));
 
             RootDirectoryPath = dialog.SelectedPath;

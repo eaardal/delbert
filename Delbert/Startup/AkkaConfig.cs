@@ -36,14 +36,17 @@ namespace Delbert.Startup
 
             builder.Update(container);
 
-            ResolveAllActorsOnce(container);
+            ResolveSingletonActors(actorSystemAdapter);
         }
 
-        private static void ResolveAllActorsOnce(IContainer container)
+        /// <summary>
+        /// Resolves all singleton actors so that the instance has been created and does not throw exception when trying to retrieve it using ActorSelection later on.
+        /// This will also trigger the actor's message subscriptions.
+        /// </summary>
+        /// <param name="actorSystem">The ActorSystem</param>
+        private static void ResolveSingletonActors(IActorSystemAdapter actorSystem)
         {
-            //container.ResolveNamed<IActorRef>(ActorRegistry.Client.ServerConnector.Name);
-            //container.ResolveNamed<IActorRef>(ActorRegistry.Client.Lobby.Name);
-            //container.ResolveNamed<IActorRef>(ActorRegistry.Client.GameLobby.Name);
+            actorSystem.ActorOf(ActorRegistry.RootDirectory);
         }
 
         private static ActorSystem CreateActorSystem()

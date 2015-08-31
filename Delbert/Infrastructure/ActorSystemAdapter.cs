@@ -200,7 +200,12 @@ namespace Delbert.Infrastructure
         {
             return _actorSystem.ActorOf(props, name);
         }
-        
+
+        public IActorRef ActorOf(ActorEntry actor)
+        {
+            return _actorSystem.ActorOf(_actorSystem.DI().Props(actor.ActorType), actor.Name);
+        }
+
         public IActorRef ActorOf<TProps>(ActorEntry actor) where TProps : ActorBase
         {
             return _actorSystem.ActorOf(_actorSystem.DI().Props<TProps>(), actor.Name);

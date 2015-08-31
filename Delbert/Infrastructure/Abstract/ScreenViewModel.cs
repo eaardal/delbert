@@ -11,19 +11,19 @@ namespace Delbert.Infrastructure.Abstract
         public IIoC IoC { get; }
         public IWindowManager WindowManager { get; }
         public IMessageBus MessageBus { get; }
-        public ILogger Logger { get; }
+        public ILogger Log { get; }
 
-        protected ScreenViewModel(IIoC ioc, IWindowManager windowManager, IMessageBus messageBus, ILogger logger)
+        protected ScreenViewModel(IIoC ioc, IWindowManager windowManager, IMessageBus messageBus, ILogger log)
         {
             if (ioc == null) throw new ArgumentNullException(nameof(ioc));
             if (windowManager == null) throw new ArgumentNullException(nameof(windowManager));
             if (messageBus == null) throw new ArgumentNullException(nameof(messageBus));
-            if (logger == null) throw new ArgumentNullException(nameof(logger));
+            if (log == null) throw new ArgumentNullException(nameof(log));
 
             MessageBus = messageBus;
             IoC = ioc;
             WindowManager = windowManager;
-            Logger = logger;
+            Log = log;
         }
 
         protected ScreenViewModel(IIoC ioc, IWindowManager windowManager) : this(ioc, windowManager, ioc.Resolve<IMessageBus>(), ioc.Resolve<ILogger>()) { }

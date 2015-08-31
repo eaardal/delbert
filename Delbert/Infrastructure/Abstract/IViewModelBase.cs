@@ -9,7 +9,7 @@ namespace Delbert.Infrastructure.Abstract
         IIoC IoC { get; }
         IWindowManager WindowManager { get; }
         IMessageBus MessageBus { get; }
-        ILogger Logger { get; }
+        ILogger Log { get; }
         void ShowWindow<TViewModel>();
         void ShowWindow<TViewModel>(TViewModel viewModel);
         void DoOnUiDispatcher(System.Action action);

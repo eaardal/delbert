@@ -34,9 +34,16 @@ namespace Delbert.Services
             Receive<GetRootDirectory>(msg => OnGetRootDirectory(msg));
         }
 
-        private async Task<DirectoryInfo> OnGetRootDirectory(GetRootDirectory msg)
+        private void OnGetRootDirectory(GetRootDirectory msg)
         {
-            return await Task.FromResult(_rootDirectory);
+            if (_rootDirectory != null)
+            {
+                Sender.Tell(new GetRootDirectoryResult(_rootDirectory), Self);
+            }
+            else
+            {
+                throw new Exception("Root directory not set before trying to receive it");
+            }
         }
 
         #region Messages
@@ -54,6 +61,17 @@ namespace Delbert.Services
 
         internal class GetRootDirectory { }
 
-        #endregion  
+        public class GetRootDirectoryResult
+        {
+            public GetRootDirectoryResult(DirectoryInfo currentRootDirectory)
+            {
+                if (currentRootDirectory == null) throw new ArgumentNullException(nameof(currentRootDirectory));
+                CurrentRootDirectory = currentRootDirectory;
+            }
+
+            public DirectoryInfo CurrentRootDirectory { get; }
+        }
+
+        #endregion
     }
 }

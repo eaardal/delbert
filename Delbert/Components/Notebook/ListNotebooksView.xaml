@@ -7,6 +7,16 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-            <TextBox Text="List notebooks..."></TextBox>
+        <TextBox Text="List notebooks..."></TextBox>
+        <ItemsControl ItemsSource="{Binding Path=Notebooks}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                        <TextBlock Text="{Binding Path=Directory.FullName}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </UserControl>
