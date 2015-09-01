@@ -8,6 +8,7 @@ using Akka.Configuration;
 using Akka.DI.AutoFac;
 using Akka.DI.Core;
 using Autofac;
+using Delbert.Actors;
 using Delbert.Infrastructure;
 
 namespace Delbert.Startup

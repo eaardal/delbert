@@ -120,10 +120,9 @@
     <Compile Include="Infrastructure\Abstract\IScreenViewModel.cs" />
     <Compile Include="Infrastructure\Abstract\IViewModelBase.cs" />
     <Compile Include="Infrastructure\Abstract\ScreenViewModel.cs" />
-    <Compile Include="Infrastructure\ActorEntry.cs" />
+    <Compile Include="Infrastructure\ActorMetadata.cs" />
     <Compile Include="Infrastructure\ActorEntryExtensions.cs" />
     <Compile Include="Infrastructure\ActorRefExtensions.cs" />
-    <Compile Include="Infrastructure\ActorRegistry.cs" />
     <Compile Include="Infrastructure\ActorSystemAdapter.cs" />
     <Compile Include="Infrastructure\ActorSystemExtensions.cs" />
     <Compile Include="Infrastructure\AutofacExtensions.cs" />
@@ -134,8 +133,9 @@
     <Compile Include="Infrastructure\LoggingReceiveActor.cs" />
     <Compile Include="Messages\NewRootDirectorySet.cs" />
     <Compile Include="Model\NotebookDto.cs" />
-    <Compile Include="Services\RootDirectoryActor.cs" />
-    <Compile Include="Services\NotebookActor.cs" />
+    <Compile Include="Actors\ActorRegistry.cs" />
+    <Compile Include="Actors\RootDirectoryActor.cs" />
+    <Compile Include="Actors\NotebookActor.cs" />
     <Compile Include="Shell\Abstract\IMainViewModel.cs" />
     <Compile Include="Shell\Abstract\IShellViewModel.cs" />
     <Compile Include="Shell\MainView.xaml.cs">

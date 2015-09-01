@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Interop;
 using Akka.Actor;
+using Delbert.Actors;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Abstract;
 using Delbert.Messages;
 using Delbert.Model;
-using Delbert.Services;
 
 namespace Delbert.Components.Notebook
 {
@@ -37,7 +37,11 @@ namespace Delbert.Components.Notebook
 
                 var result = await notebook.AskWithResultOf<NotebookActor.GetNotebooksResult>(new NotebookActor.GetNotebooks());
 
-                result.Notebooks.ForEach(n => Notebooks.Add(n));
+                await DoOnUiDispatcherAsync(() =>
+                {
+                    Notebooks.Clear();
+                    result.Notebooks.ForEach(n => Notebooks.Add(n));
+                });
             }
             catch (Exception ex)
             {

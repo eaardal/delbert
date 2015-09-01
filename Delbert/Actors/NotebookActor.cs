@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Akka.Actor;
-using Akka.DI.Core;
 using Delbert.Infrastructure;
-using Delbert.Infrastructure.Logging;
 using Delbert.Infrastructure.Logging.Contracts;
 using Delbert.Model;
 
-namespace Delbert.Services
+namespace Delbert.Actors
 {
     internal class NotebookActor : LoggingReceiveActor
     {
@@ -61,10 +56,11 @@ namespace Delbert.Services
 
         private ImmutableArray<NotebookDto> CreateNotebooksFromDirectories(DirectoryInfo[] directories)
         {
-            return directories.Select(d => new NotebookDto
+            return directories.Select(dir => new NotebookDto
             {
-                Name = GetNotebookName(d),
-                Directory = d
+                Name = GetNotebookName(dir),
+                Directory = dir
+
             }).ToImmutableArray();
         }
 

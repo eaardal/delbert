@@ -9,43 +9,46 @@ namespace Delbert.Infrastructure
 
     public static class ActorSystemExtensions
     {
-        public static ActorSelection ActorSelection(this ActorSystem actorSystem, ActorEntry actorEntry, ActorPathType path = ActorPathType.Absolute)
+        public static ActorSelection ActorSelection(this ActorSystem actorSystem, ActorMetadata actor, ActorPathType path = ActorPathType.Absolute)
         {
-            switch (path)
-            {
-                case ActorPathType.Absolute:
-                    return actorSystem.ActorSelection(actorEntry.AbsoluteUri);
-                case ActorPathType.Relative:
-                    return actorSystem.ActorSelection(actorEntry.RelativeUri);
-                default:
-                    return actorSystem.ActorSelection(actorEntry.AbsoluteUri);
-            }
+            return actorSystem.ActorSelection(actor.Path);
+            //switch (path)
+            //{
+            //    case ActorPathType.Absolute:
+            //        return actorSystem.ActorSelection(actor.AbsoluteUri);
+            //    case ActorPathType.Relative:
+            //        return actorSystem.ActorSelection(actor.RelativeUri);
+            //    default:
+            //        return actorSystem.ActorSelection(actor.AbsoluteUri);
+            //}
         }
 
-        public static ActorSelection ActorSelection(this IActorSystemAdapter actorSystem, ActorEntry actorEntry, ActorPathType path = ActorPathType.Absolute)
+        public static ActorSelection ActorSelection(this IActorSystemAdapter actorSystem, ActorMetadata actor, ActorPathType path = ActorPathType.Absolute)
         {
-            switch (path)
-            {
-                case ActorPathType.Absolute:
-                    return actorSystem.ActorSelection(actorEntry.AbsoluteUri);
-                case ActorPathType.Relative:
-                    return actorSystem.ActorSelection(actorEntry.RelativeUri);
-                default:
-                    return actorSystem.ActorSelection(actorEntry.AbsoluteUri);
-            }
+            return actorSystem.ActorSelection(actor.Path);
+            //switch (path)
+            //{
+            //    case ActorPathType.Absolute:
+            //        return actorSystem.ActorSelection(actor.AbsoluteUri);
+            //    case ActorPathType.Relative:
+            //        return actorSystem.ActorSelection(actor.RelativeUri);
+            //    default:
+            //        return actorSystem.ActorSelection(actor.AbsoluteUri);
+            //}
         }
 
-        public static ActorSelection ActorSelection(this IUntypedActorContext context, ActorEntry actor, ActorPathType path = ActorPathType.Absolute)
+        public static ActorSelection ActorSelection(this IUntypedActorContext context, ActorMetadata actor, ActorPathType path = ActorPathType.Absolute)
         {
-            switch (path)
-            {
-                case ActorPathType.Absolute:
-                    return context.ActorSelection(actor.AbsoluteUri);
-                case ActorPathType.Relative:
-                    return context.ActorSelection(actor.RelativeUri);
-                default:
-                    return context.ActorSelection(actor.AbsoluteUri);
-            }
+            return context.ActorSelection(actor.Path);
+            //switch (path)
+            //{
+            //    case ActorPathType.Absolute:
+            //        return context.ActorSelection(actor.Path);
+            //    case ActorPathType.Relative:
+            //        return context.ActorSelection(actor.RelativeUri);
+            //    default:
+            //        return context.ActorSelection(actor.AbsoluteUri);
+            //}
         }
     }
 }

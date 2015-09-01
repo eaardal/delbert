@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
 using Akka.Actor;
+using Delbert.Actors;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Abstract;
-using Delbert.Services;
 
 namespace Delbert.Components
 {
