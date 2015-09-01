@@ -51,6 +51,10 @@ namespace Delbert.Components.Section
                 return;
             }
 
+            Sections.ForEach(s => s.Deselect());
+
+            section.Select();
+
             MessageBus.Publish(new SectionSelected(section));
         }
     }

@@ -6,8 +6,12 @@
              xmlns:local="clr-namespace:Delbert.Components.Section"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:converters="clr-namespace:Delbert.Infrastructure.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:IsSectionSelectedToBackgroundConverter x:Key="IsSectionSelectedToBackgroundConverter"></converters:IsSectionSelectedToBackgroundConverter>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
@@ -20,7 +24,7 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Padding="3" CornerRadius="5,5,0,0" Background="LightSteelBlue" Margin="3,0,0,0">
+                    <Border Padding="3" CornerRadius="5,5,0,0" Background="{Binding Path=IsSelected, Converter={StaticResource IsSectionSelectedToBackgroundConverter}}" Margin="3,0,0,0">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDown">
                                 <cal:ActionMessage MethodName="SectionSelected">

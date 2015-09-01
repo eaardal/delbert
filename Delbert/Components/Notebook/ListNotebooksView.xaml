@@ -6,8 +6,12 @@
              xmlns:local="clr-namespace:Delbert.Components.Notebook"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:converters="clr-namespace:Delbert.Infrastructure.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:IsNotebookSelectedToBackgroundConverter x:Key="IsNotebookSelectedToBackgroundConverter"></converters:IsNotebookSelectedToBackgroundConverter>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
@@ -15,7 +19,7 @@
         <ItemsControl Grid.Row="0" ItemsSource="{Binding Path=Notebooks}" Margin="5">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Padding="3" CornerRadius="5,0,0,5" Background="LightSeaGreen" Margin="0,3,0,0">
+                    <Border Padding="3" CornerRadius="5,0,0,5" Background="{Binding Path=IsSelected, Converter={StaticResource IsNotebookSelectedToBackgroundConverter}}" Margin="0,3,0,0">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDown">
                                 <cal:ActionMessage MethodName="NotebookSelected">

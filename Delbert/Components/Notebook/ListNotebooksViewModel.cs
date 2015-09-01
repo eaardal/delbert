@@ -57,6 +57,10 @@ namespace Delbert.Components.Notebook
                 return;
             }
 
+            Notebooks.ForEach(n => n.Deselect());
+
+            notebook.Select();
+
             MessageBus.Publish(new NotebookSelected(notebook));
         }
     }

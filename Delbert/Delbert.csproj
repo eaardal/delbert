@@ -143,7 +143,11 @@
     <Compile Include="Infrastructure\ActorSystemAdapter.cs" />
     <Compile Include="Infrastructure\ActorSystemExtensions.cs" />
     <Compile Include="Infrastructure\AutofacExtensions.cs" />
+    <Compile Include="Infrastructure\BrushHelper.cs" />
     <Compile Include="Infrastructure\ByteArrayExtensions.cs" />
+    <Compile Include="Infrastructure\Converters\IsNotebookSelectedToBackgroundConverter.cs" />
+    <Compile Include="Infrastructure\Converters\IsPageSelectedToBackgroundConverter.cs" />
+    <Compile Include="Infrastructure\Converters\IsSectionSelectedToBackgroundConverter.cs" />
     <Compile Include="Infrastructure\Exceptions\UnexpectedActorAnswer.cs" />
     <Compile Include="Infrastructure\IActorSelectionAdapter.cs" />
     <Compile Include="Infrastructure\IActorSystemAdapter.cs" />

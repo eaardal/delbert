@@ -14,7 +14,7 @@
         <ContentControl Grid.Row="0" x:Name="SelectRootDirectory" Margin="10" HorizontalAlignment="Center"></ContentControl>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto" MinHeight="33"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>

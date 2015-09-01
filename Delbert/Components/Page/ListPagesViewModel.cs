@@ -30,6 +30,10 @@ namespace Delbert.Components.Page
                 return;
             }
 
+            Pages.ForEach(p => p.Deselect());
+
+            page.Select();
+
             MessageBus.Publish(new PageSelected(page));
         }
 
