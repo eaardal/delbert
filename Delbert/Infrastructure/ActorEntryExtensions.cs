@@ -7,11 +7,11 @@
             switch (pathType)
             {
                 case ActorPathType.Absolute:
-                    return entry.AbsoluteUrl;
+                    return entry.AbsoluteUri;
                 case ActorPathType.Relative:
-                    return entry.RelativeUrl;
+                    return entry.RelativeUri;
                 default:
-                    return entry.AbsoluteUrl;
+                    return entry.AbsoluteUri;
             }
         }
     }

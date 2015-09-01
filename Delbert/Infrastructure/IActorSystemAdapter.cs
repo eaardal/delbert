@@ -22,6 +22,8 @@ namespace Delbert.Infrastructure
         Task TerminationTask { get; }
 
         IActorRef ActorOf(Props props, string name = null);
+        IActorRef ActorOf<TProps>(ActorEntry actor) where TProps : ActorBase;
+        IActorRef ActorOf(ActorEntry actor);
         ActorSelection ActorSelection(string actorPath);
         ActorSelection ActorSelection(Akka.Actor.ActorPath actorPath);
         void AwaitTermination();
