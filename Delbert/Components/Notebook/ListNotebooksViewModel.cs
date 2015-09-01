@@ -33,9 +33,9 @@ namespace Delbert.Components.Notebook
         {
             try
             {
-                var notebook = _actorSystem.ActorOf(ActorRegistry.Notebook);
+                var notebookActor = _actorSystem.ActorOf(ActorRegistry.Notebook);
 
-                var result = await notebook.AskWithResultOf<NotebookActor.GetNotebooksResult>(new NotebookActor.GetNotebooks());
+                var result = await notebookActor.AskWithResultOf<NotebookActor.GetNotebooksResult>(new NotebookActor.GetNotebooks());
 
                 await DoOnUiDispatcherAsync(() =>
                 {

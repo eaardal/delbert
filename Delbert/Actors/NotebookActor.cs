@@ -27,6 +27,8 @@ namespace Delbert.Actors
 
                 var notebooks = GetNotebooksUnderDirectory(rootDirectory);
 
+                notebooks = await SetNotebookSections(notebooks);
+
                 Sender.Tell(new GetNotebooksResult(notebooks), Self);
             }
             catch (Exception ex)
@@ -46,6 +48,25 @@ namespace Delbert.Actors
         }
 
         #endregion
+
+        private async Task<ImmutableArray<NotebookDto>> SetNotebookSections(ImmutableArray<NotebookDto> notebooks)
+        {
+            var notebookSectionActor = Context.ActorOf(ActorRegistry.Section);
+
+            return await Task.Run(() =>
+            {
+                return notebooks.ForEach(async notebook =>
+                {
+                    var result =
+                        await
+                            notebookSectionActor.AskWithResultOf<SectionActor.GetSectionsForNotebookResult>(
+                                new SectionActor.GetSectionsForNotebook(notebook));
+
+                    notebook.Sections = result.Sections;
+
+                }).ToImmutableArray();
+            });
+        }
 
         private ImmutableArray<NotebookDto> GetNotebooksUnderDirectory(DirectoryInfo directory)
         {

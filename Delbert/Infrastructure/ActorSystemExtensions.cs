@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using Akka.DI.Core;
 
 namespace Delbert.Infrastructure
 {
@@ -49,6 +50,11 @@ namespace Delbert.Infrastructure
             //    default:
             //        return context.ActorSelection(actor.AbsoluteUri);
             //}
+        }
+
+        public static IActorRef ActorOf(this IUntypedActorContext context, ActorMetadata actor)
+        {
+            return context.ActorOf(context.DI().Props(actor.ActorType), actor.Name);
         }
     }
 }

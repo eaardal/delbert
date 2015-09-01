@@ -2,26 +2,27 @@
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Logging.Contracts;
 using Delbert.Model;
 
 namespace Delbert.Actors
 {
-    public class NotebookSectionActor : LoggingReceiveActor
+    public class SectionActor : LoggingReceiveActor
     {
-        public NotebookSectionActor(ILogger log) : base(log)
+        public SectionActor(ILogger log) : base(log)
         {
-            Receive<GetSectionsForNotebook>(msg => OnGetSectionsForNotebook(msg));
+            Receive<GetSectionsForNotebook>(async msg => await OnGetSectionsForNotebook(msg));
         }
 
         #region Message Handlers
 
-        private void OnGetSectionsForNotebook(GetSectionsForNotebook msg)
+        private async Task OnGetSectionsForNotebook(GetSectionsForNotebook msg)
         {
             try
             {
-                var sections = GetSections(msg.Notebook);
+                var sections = await GetSections(msg.Notebook);
 
                 Sender.Tell(new GetSectionsForNotebookResult(sections), Self);
             }
@@ -33,15 +34,41 @@ namespace Delbert.Actors
 
         #endregion
 
-        private ImmutableArray<SectionDto> GetSections(NotebookDto notebook)
+        private async Task<ImmutableArray<SectionDto>> GetSections(NotebookDto notebook)
         {
             var subDirectories = notebook.Directory.GetDirectories();
 
             var sections = CreateSectionsFromDirectories(subDirectories);
 
-            sections.ForEach(s => s.Notebook = notebook);
+            sections = SetParentNotebook(notebook, sections);
+
+            sections = await SetPagesForSections(sections);
 
             return sections;
+        }
+
+        private async Task<ImmutableArray<SectionDto>> SetPagesForSections(ImmutableArray<SectionDto> sections)
+        {
+            var pageActor = Context.ActorOf(ActorRegistry.Page);
+
+            return await Task.Run(() =>
+            {
+                return sections.ForEach(async section =>
+                {
+                    var result =
+                        await
+                            pageActor.AskWithResultOf<PageActor.GetPagesForSectionResult>(
+                                new PageActor.GetPagesForSection(section));
+
+                    section.Pages = result.Pages;
+
+                }).ToImmutableArray();
+            });
+        }
+
+        private static ImmutableArray<SectionDto> SetParentNotebook(NotebookDto notebook, ImmutableArray<SectionDto> sections)
+        {
+            return sections.ForEach(s => s.Notebook = notebook).ToImmutableArray();
         }
 
         private ImmutableArray<SectionDto> CreateSectionsFromDirectories(DirectoryInfo[] subDirectories)

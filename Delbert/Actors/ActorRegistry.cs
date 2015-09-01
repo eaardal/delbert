@@ -7,6 +7,7 @@ namespace Delbert.Actors
     {
         public static ActorMetadata Notebook => new ActorMetadata(typeof(NotebookActor));
         public static ActorMetadata RootDirectory => new ActorMetadata("rootDirectory", typeof(RootDirectoryActor));
-        public static ActorMetadata NotebookSection => new ActorMetadata(typeof(NotebookSectionActor));
+        public static ActorMetadata Section => new ActorMetadata(typeof(SectionActor));
+        public static ActorMetadata Page => new ActorMetadata(typeof(PageActor));
     }
 }

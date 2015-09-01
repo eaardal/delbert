@@ -31,19 +31,11 @@ namespace Delbert.Components.Section
         {
             try
             {
-                var sectionActor = _actorSystem.ActorOf(ActorRegistry.NotebookSection);
-
-                var result =
-                    await
-                        sectionActor.AskWithResultOf<NotebookSectionActor.GetSectionsForNotebookResult>(
-                            new NotebookSectionActor.GetSectionsForNotebook(msg.Notebook));
-
                 await DoOnUiDispatcherAsync(() =>
                 {
                     NotebookSections.Clear();
-                    result.Sections.ForEach(s => NotebookSections.Add(s));
+                    msg.Notebook.Sections.ForEach(s => NotebookSections.Add(s));
                 });
-
             }
             catch (Exception ex)
             {

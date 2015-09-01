@@ -105,7 +105,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Actors\NotebookSectionActor.cs" />
+    <Compile Include="Actors\SectionActor.cs" />
+    <Compile Include="Actors\PageActor.cs" />
     <Compile Include="Components\ISelectRootDirectoryViewModel.cs" />
     <Compile Include="Components\Notebook\IListNotebooksViewModel.cs" />
     <Compile Include="Components\Notebook\ListNotebooksView.xaml.cs">
@@ -144,6 +145,7 @@
     <Compile Include="Actors\ActorRegistry.cs" />
     <Compile Include="Actors\RootDirectoryActor.cs" />
     <Compile Include="Actors\NotebookActor.cs" />
+    <Compile Include="Model\PageDto.cs" />
     <Compile Include="Model\SectionDto.cs" />
     <Compile Include="Shell\Abstract\IMainViewModel.cs" />
     <Compile Include="Shell\Abstract\IShellViewModel.cs" />
