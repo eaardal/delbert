@@ -114,6 +114,7 @@
     <Compile Include="Infrastructure\IActorSelectionAdapter.cs" />
     <Compile Include="Infrastructure\IActorSystemAdapter.cs" />
     <Compile Include="Infrastructure\LoggingReceiveActor.cs" />
+    <Compile Include="Services\NotebookActor.cs" />
     <Compile Include="Shell\Abstract\IMainViewModel.cs" />
     <Compile Include="Shell\Abstract\IShellViewModel.cs" />
     <Compile Include="Shell\MainView.xaml.cs">
@@ -200,7 +201,6 @@
     <Folder Include="Components\Editor\" />
     <Folder Include="Components\Page\" />
     <Folder Include="Components\Section\" />
-    <Folder Include="Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
