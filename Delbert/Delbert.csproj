@@ -107,12 +107,22 @@
     </ApplicationDefinition>
     <Compile Include="Actors\SectionActor.cs" />
     <Compile Include="Actors\PageActor.cs" />
+    <Compile Include="Components\Editor\EditorView.xaml.cs">
+      <DependentUpon>EditorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Editor\EditorViewModel.cs" />
+    <Compile Include="Components\Editor\IEditorViewModel.cs" />
     <Compile Include="Components\ISelectRootDirectoryViewModel.cs" />
     <Compile Include="Components\Notebook\IListNotebooksViewModel.cs" />
     <Compile Include="Components\Notebook\ListNotebooksView.xaml.cs">
       <DependentUpon>ListNotebooksView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\Notebook\ListNotebooksViewModel.cs" />
+    <Compile Include="Components\Page\IListPagesViewModel.cs" />
+    <Compile Include="Components\Page\ListPagesView.xaml.cs">
+      <DependentUpon>ListPagesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Page\ListPagesViewModel.cs" />
     <Compile Include="Components\Section\IListNotebookSectionsViewModel.cs" />
     <Compile Include="Components\Section\ListNotebookSectionsView.xaml.cs">
       <DependentUpon>ListNotebookSectionsView.xaml</DependentUpon>
@@ -141,6 +151,7 @@
     <Compile Include="Messages\NewRootDirectorySet.cs" />
     <Compile Include="Messages\NotebookSectionSelected.cs" />
     <Compile Include="Messages\NotebookSelected.cs" />
+    <Compile Include="Messages\PageSelected.cs" />
     <Compile Include="Model\NotebookDto.cs" />
     <Compile Include="Actors\ActorRegistry.cs" />
     <Compile Include="Actors\RootDirectoryActor.cs" />
@@ -183,7 +194,15 @@
     <Compile Include="Infrastructure\MessageBus.cs" />
     <Compile Include="Infrastructure\NotifyPropertyChangedBase.cs" />
     <Compile Include="Infrastructure\XamlHelpers.cs" />
+    <Page Include="Components\Editor\EditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Components\Notebook\ListNotebooksView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\Page\ListPagesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -235,10 +254,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Components\Editor\" />
-    <Folder Include="Components\Page\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

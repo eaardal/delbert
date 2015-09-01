@@ -59,9 +59,15 @@ namespace Delbert.Actors
             return files.Select(file => new PageDto
             {
                 Name = GetPageName(file),
-                File = file
+                File = file,
+                Text = ReadFileContents(file)
 
             }).ToImmutableArray();
+        }
+
+        private string ReadFileContents(FileInfo file)
+        {
+            return file.ReadAllText(Encoding.UTF8);
         }
 
         private string GetPageName(FileInfo file)

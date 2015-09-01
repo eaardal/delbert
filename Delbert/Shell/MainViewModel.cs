@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using Delbert.Components;
+using Delbert.Components.Editor;
 using Delbert.Components.Notebook;
+using Delbert.Components.Page;
 using Delbert.Components.Section;
 using Delbert.Infrastructure.Abstract;
 using Delbert.Messages;
@@ -18,11 +20,15 @@ namespace Delbert.Shell
         private IScreen _selectRootDirectory;
         private IScreen _listNotebooks;
         private IScreen _listNotebookSections;
+        private IScreen _listPages;
+        private IScreen _editor;
 
         public MainViewModel(IIoC ioc, 
             ISelectRootDirectoryViewModel selectRootDirectoryViewModel,
             IListNotebooksViewModel listNotebooksViewModel,
-            IListNotebookSectionsViewModel listNotebookSectionsViewModel) : base(ioc)
+            IListNotebookSectionsViewModel listNotebookSectionsViewModel,
+            IListPagesViewModel listPagesViewModel,
+            IEditorViewModel editorViewModel) : base(ioc)
         {
             if (selectRootDirectoryViewModel == null)
                 throw new ArgumentNullException(nameof(selectRootDirectoryViewModel));
@@ -33,24 +39,46 @@ namespace Delbert.Shell
             if (listNotebookSectionsViewModel == null)
                 throw new ArgumentNullException(nameof(listNotebookSectionsViewModel));
 
+            if (listPagesViewModel == null)
+                throw new ArgumentNullException(nameof(listPagesViewModel));
+
+            if (editorViewModel == null)
+                throw new ArgumentNullException(nameof(editorViewModel));
+
             SelectRootDirectory = selectRootDirectoryViewModel;
             ListNotebooks = listNotebooksViewModel;
             ListNotebookSections = listNotebookSectionsViewModel;
-
-            SetStartupState();
+            ListPages = listPagesViewModel;
+            Editor = editorViewModel;
 
             MessageBus.Subscribe<NewRootDirectorySet>(OnNewRootDirectory);
         }
-
-        private void SetStartupState()
-        {
-            SelectRootDirectory.Activate();
-            ListNotebooks.Deactivate(true);
-        }
-
+        
         private void OnNewRootDirectory(NewRootDirectorySet message)
         {
-            ActivateItem(ListNotebooks);
+            //TODO: Hide root dir textbox?
+        }
+
+        public IScreen Editor
+        {
+            get { return _editor; }
+            set
+            {
+                if (Equals(value, _editor)) return;
+                _editor = value;
+                NotifyOfPropertyChange(() => Editor);
+            }
+        }
+
+        public IScreen ListPages
+        {
+            get { return _listPages; }
+            set
+            {
+                if (Equals(value, _listPages)) return;
+                _listPages = value;
+                NotifyOfPropertyChange(() => ListPages);
+            }
         }
 
         public IScreen ListNotebookSections
