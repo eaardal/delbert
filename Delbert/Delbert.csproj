@@ -153,6 +153,7 @@
     <Compile Include="Infrastructure\IActorSystemAdapter.cs" />
     <Compile Include="Infrastructure\LoggingReceiveActor.cs" />
     <Compile Include="Messages\NewRootDirectorySet.cs" />
+    <Compile Include="Messages\RootDirectoryChanged.cs" />
     <Compile Include="Messages\SectionSelected.cs" />
     <Compile Include="Messages\NotebookSelected.cs" />
     <Compile Include="Messages\PageSelected.cs" />

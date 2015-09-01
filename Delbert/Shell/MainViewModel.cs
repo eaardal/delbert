@@ -51,6 +51,8 @@ namespace Delbert.Shell
             ListPages = listPagesViewModel;
             Editor = editorViewModel;
 
+            SelectRootDirectory.Activate();
+
             MessageBus.Subscribe<NewRootDirectorySet>(OnNewRootDirectory);
         }
         

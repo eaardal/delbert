@@ -19,7 +19,7 @@ namespace Delbert.Infrastructure
             var answer = await actor.Ask(message);
             return ValidateAnswer<T>(answer);
         }
-
+        
         private static T ValidateAnswer<T>(object answer) where T:class
         {
             try

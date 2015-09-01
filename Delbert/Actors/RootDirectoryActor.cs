@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Akka.Actor;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Logging.Contracts;
 using Delbert.Messages;
@@ -16,7 +17,73 @@ namespace Delbert.Actors
             if (messageBus == null) throw new ArgumentNullException(nameof(messageBus));
             _messageBus = messageBus;
 
+            SetRootDirectoryFromCommandLineArgumentsIfExists();
+
             Receive<SetRootDirectory>(msg => OnSetRootDirectory(msg));
+        }
+
+        private void SetRootDirectoryFromCommandLineArgumentsIfExists()
+        {
+            var args = Environment.GetCommandLineArgs();
+
+            int matchIndex;
+            if (IsRootDirectoryArgument(args, out matchIndex))
+            {
+                var rootDirectoryPathIndex = matchIndex + 1;
+
+                var directory = args[rootDirectoryPathIndex].ToDirectoryInfo();
+
+                if (directory.Exists)
+                {
+                    SetRootDir(directory);
+                }
+                else
+                {
+                    Log.Msg(this, l => l.Warning("Given directory does not exist"));
+                }
+            }
+        }
+
+        private bool IsRootDirectoryArgument(string[] args, out int rootDirectoryArgSwitchIndex)
+        {
+            if (args.Length < 2)
+            {
+                rootDirectoryArgSwitchIndex = -1;
+                return false;
+            }
+
+            var validSwitches = new[] { "-rd", "-path" };
+
+            var foundMatch = false;
+            var matchIndex = -1;
+
+            for (var i = 0; i < args.Length; i++)
+            {
+                try
+                {
+                    var arg = args[i];
+                    var nextArg = args[i + 1];
+
+                    if (!string.IsNullOrEmpty(arg) && !string.IsNullOrEmpty(nextArg))
+                    {
+                        var argSwitch = arg;
+                        
+                        if (validSwitches.ContainsAny(argSwitch))
+                        {
+                            foundMatch = true;
+                            matchIndex = i;
+                            break;
+                        }
+                    }
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    // Ignore and continue
+                }
+            }
+
+            rootDirectoryArgSwitchIndex = matchIndex;
+            return foundMatch;
         }
 
         #region Become
@@ -33,7 +100,12 @@ namespace Delbert.Actors
 
         private void OnSetRootDirectory(SetRootDirectory msg)
         {
-            _rootDirectory = msg.RootDirectory;
+            SetRootDir(msg.RootDirectory);
+        }
+
+        private void SetRootDir(DirectoryInfo directory)
+        {
+            _rootDirectory = directory;
 
             _messageBus.Publish(new NewRootDirectorySet(_rootDirectory));
 
@@ -48,7 +120,7 @@ namespace Delbert.Actors
             }
             else
             {
-                throw new Exception("Root directory not set before trying to receive it");
+                Sender.Tell(new NoRootDirectorySet(), Self);
             }
         }
 
@@ -78,6 +150,11 @@ namespace Delbert.Actors
             }
 
             public DirectoryInfo CurrentRootDirectory { get; }
+        }
+
+        public class NoRootDirectorySet
+        {
+            
         }
 
         #endregion
