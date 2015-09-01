@@ -11,21 +11,21 @@ using Delbert.Model;
 
 namespace Delbert.Components.Section
 {
-    class ListNotebookSectionsViewModel : ScreenViewModel, IListNotebookSectionsViewModel
+    class ListSectionsViewModel : ScreenViewModel, IListSectionsViewModel
     {
         private readonly IActorSystemAdapter _actorSystem;
 
-        public ListNotebookSectionsViewModel(IIoC ioc, IActorSystemAdapter actorSystem) : base(ioc)
+        public ListSectionsViewModel(IIoC ioc, IActorSystemAdapter actorSystem) : base(ioc)
         {
             if (actorSystem == null) throw new ArgumentNullException(nameof(actorSystem));
             _actorSystem = actorSystem;
 
-            NotebookSections = new ItemChangeAwareObservableCollection<SectionDto>();
+            Sections = new ItemChangeAwareObservableCollection<SectionDto>();
 
             MessageBus.Subscribe<NotebookSelected>(async msg => await OnNotebookSelected(msg));
         }
 
-        public ItemChangeAwareObservableCollection<SectionDto> NotebookSections { get; }
+        public ItemChangeAwareObservableCollection<SectionDto> Sections { get; }
 
         private async Task OnNotebookSelected(NotebookSelected msg)
         {
@@ -33,8 +33,8 @@ namespace Delbert.Components.Section
             {
                 await DoOnUiDispatcherAsync(() =>
                 {
-                    NotebookSections.Clear();
-                    msg.Notebook.Sections.ForEach(s => NotebookSections.Add(s));
+                    Sections.Clear();
+                    msg.Notebook.Sections.ForEach(s => Sections.Add(s));
                 });
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace Delbert.Components.Section
                 return;
             }
 
-            MessageBus.Publish(new NotebookSectionSelected(section));
+            MessageBus.Publish(new SectionSelected(section));
         }
     }
 }

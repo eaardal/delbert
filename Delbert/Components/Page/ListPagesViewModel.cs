@@ -17,7 +17,7 @@ namespace Delbert.Components.Page
         {
             Pages = new ItemChangeAwareObservableCollection<PageDto>();
 
-            MessageBus.Subscribe<NotebookSectionSelected>(async msg => await OnSectionSelected(msg));
+            MessageBus.Subscribe<SectionSelected>(async msg => await OnSectionSelected(msg));
         }
 
         public ItemChangeAwareObservableCollection<PageDto> Pages { get; }
@@ -33,7 +33,7 @@ namespace Delbert.Components.Page
             MessageBus.Publish(new PageSelected(page));
         }
 
-        private async Task OnSectionSelected(NotebookSectionSelected message)
+        private async Task OnSectionSelected(SectionSelected message)
         {
             try
             {

@@ -19,14 +19,14 @@ namespace Delbert.Shell
     {
         private IScreen _selectRootDirectory;
         private IScreen _listNotebooks;
-        private IScreen _listNotebookSections;
+        private IScreen _listSections;
         private IScreen _listPages;
         private IScreen _editor;
 
         public MainViewModel(IIoC ioc, 
             ISelectRootDirectoryViewModel selectRootDirectoryViewModel,
             IListNotebooksViewModel listNotebooksViewModel,
-            IListNotebookSectionsViewModel listNotebookSectionsViewModel,
+            IListSectionsViewModel listSectionsViewModel,
             IListPagesViewModel listPagesViewModel,
             IEditorViewModel editorViewModel) : base(ioc)
         {
@@ -36,8 +36,8 @@ namespace Delbert.Shell
             if (listNotebooksViewModel == null)
                 throw new ArgumentNullException(nameof(listNotebooksViewModel));
 
-            if (listNotebookSectionsViewModel == null)
-                throw new ArgumentNullException(nameof(listNotebookSectionsViewModel));
+            if (listSectionsViewModel == null)
+                throw new ArgumentNullException(nameof(listSectionsViewModel));
 
             if (listPagesViewModel == null)
                 throw new ArgumentNullException(nameof(listPagesViewModel));
@@ -47,7 +47,7 @@ namespace Delbert.Shell
 
             SelectRootDirectory = selectRootDirectoryViewModel;
             ListNotebooks = listNotebooksViewModel;
-            ListNotebookSections = listNotebookSectionsViewModel;
+            ListSections = listSectionsViewModel;
             ListPages = listPagesViewModel;
             Editor = editorViewModel;
 
@@ -81,14 +81,14 @@ namespace Delbert.Shell
             }
         }
 
-        public IScreen ListNotebookSections
+        public IScreen ListSections
         {
-            get { return _listNotebookSections; }
+            get { return _listSections; }
             set
             {
-                if (Equals(value, _listNotebookSections)) return;
-                _listNotebookSections = value;
-                NotifyOfPropertyChange(() => ListNotebookSections);
+                if (Equals(value, _listSections)) return;
+                _listSections = value;
+                NotifyOfPropertyChange(() => ListSections);
             }
         }
 

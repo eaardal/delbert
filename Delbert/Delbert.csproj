@@ -123,11 +123,11 @@
       <DependentUpon>ListPagesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\Page\ListPagesViewModel.cs" />
-    <Compile Include="Components\Section\IListNotebookSectionsViewModel.cs" />
-    <Compile Include="Components\Section\ListNotebookSectionsView.xaml.cs">
-      <DependentUpon>ListNotebookSectionsView.xaml</DependentUpon>
+    <Compile Include="Components\Section\IListSectionsViewModel.cs" />
+    <Compile Include="Components\Section\ListSectionsView.xaml.cs">
+      <DependentUpon>ListSectionsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Components\Section\ListNotebookSectionsViewModel.cs" />
+    <Compile Include="Components\Section\ListSectionsViewModel.cs" />
     <Compile Include="Components\SelectRootDirectoryView.xaml.cs">
       <DependentUpon>SelectRootDirectoryView.xaml</DependentUpon>
     </Compile>
@@ -149,7 +149,7 @@
     <Compile Include="Infrastructure\IActorSystemAdapter.cs" />
     <Compile Include="Infrastructure\LoggingReceiveActor.cs" />
     <Compile Include="Messages\NewRootDirectorySet.cs" />
-    <Compile Include="Messages\NotebookSectionSelected.cs" />
+    <Compile Include="Messages\SectionSelected.cs" />
     <Compile Include="Messages\NotebookSelected.cs" />
     <Compile Include="Messages\PageSelected.cs" />
     <Compile Include="Model\NotebookDto.cs" />
@@ -206,7 +206,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Components\Section\ListNotebookSectionsView.xaml">
+    <Page Include="Components\Section\ListSectionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

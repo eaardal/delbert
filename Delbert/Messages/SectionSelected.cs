@@ -2,11 +2,11 @@ using Delbert.Model;
 
 namespace Delbert.Messages
 {
-    internal class NotebookSectionSelected
+    internal class SectionSelected
     {
         public SectionDto Section { get; }
 
-        public NotebookSectionSelected(SectionDto section)
+        public SectionSelected(SectionDto section)
         {
             Section = section;
         }
