@@ -1,4 +1,5 @@
-﻿using Delbert.Infrastructure;
+﻿using Akka.Actor;
+using Delbert.Infrastructure;
 
 namespace Delbert.Actors
 {
@@ -6,5 +7,6 @@ namespace Delbert.Actors
     {
         public static ActorMetadata Notebook => new ActorMetadata(typeof(NotebookActor));
         public static ActorMetadata RootDirectory => new ActorMetadata("rootDirectory", typeof(RootDirectoryActor));
+        public static ActorMetadata NotebookSection => new ActorMetadata(typeof(NotebookSectionActor));
     }
 }

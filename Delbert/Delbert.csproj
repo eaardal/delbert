@@ -105,12 +105,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Actors\NotebookSectionActor.cs" />
     <Compile Include="Components\ISelectRootDirectoryViewModel.cs" />
     <Compile Include="Components\Notebook\IListNotebooksViewModel.cs" />
     <Compile Include="Components\Notebook\ListNotebooksView.xaml.cs">
       <DependentUpon>ListNotebooksView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\Notebook\ListNotebooksViewModel.cs" />
+    <Compile Include="Components\Section\ListNotebookSectionsView.xaml.cs">
+      <DependentUpon>ListNotebookSectionsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Section\ListNotebookSectionsViewModel.cs" />
     <Compile Include="Components\SelectRootDirectoryView.xaml.cs">
       <DependentUpon>SelectRootDirectoryView.xaml</DependentUpon>
     </Compile>
@@ -136,6 +141,7 @@
     <Compile Include="Actors\ActorRegistry.cs" />
     <Compile Include="Actors\RootDirectoryActor.cs" />
     <Compile Include="Actors\NotebookActor.cs" />
+    <Compile Include="Model\SectionDto.cs" />
     <Compile Include="Shell\Abstract\IMainViewModel.cs" />
     <Compile Include="Shell\Abstract\IShellViewModel.cs" />
     <Compile Include="Shell\MainView.xaml.cs">
@@ -173,6 +179,10 @@
     <Compile Include="Infrastructure\NotifyPropertyChangedBase.cs" />
     <Compile Include="Infrastructure\XamlHelpers.cs" />
     <Page Include="Components\Notebook\ListNotebooksView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\Section\ListNotebookSectionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -223,7 +233,6 @@
   <ItemGroup>
     <Folder Include="Components\Editor\" />
     <Folder Include="Components\Page\" />
-    <Folder Include="Components\Section\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

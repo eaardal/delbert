@@ -48,5 +48,24 @@ namespace Delbert.Components.Notebook
                 Log.Msg(this, l => l.Error(ex));
             }
         }
+
+        public async void NotebookSelected(NotebookDto notebook)
+        {
+            if (notebook == null) return;
+
+            try
+            {
+                var sectionActor = _actorSystem.ActorOf(ActorRegistry.NotebookSection);
+
+                var result =
+                    await
+                        sectionActor.AskWithResultOf<NotebookSectionActor.GetSectionsForNotebookResult>(
+                            new NotebookSectionActor.GetSectionsForNotebook(notebook));
+            }
+            catch (Exception ex)
+            {
+                Log.Msg(this, l => l.Error(ex));
+            }
+        }
     }
 }
