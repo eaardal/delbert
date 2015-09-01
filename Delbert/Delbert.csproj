@@ -112,6 +112,7 @@
       <DependentUpon>ListNotebooksView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\Notebook\ListNotebooksViewModel.cs" />
+    <Compile Include="Components\Section\IListNotebookSectionsViewModel.cs" />
     <Compile Include="Components\Section\ListNotebookSectionsView.xaml.cs">
       <DependentUpon>ListNotebookSectionsView.xaml</DependentUpon>
     </Compile>
@@ -137,6 +138,8 @@
     <Compile Include="Infrastructure\IActorSystemAdapter.cs" />
     <Compile Include="Infrastructure\LoggingReceiveActor.cs" />
     <Compile Include="Messages\NewRootDirectorySet.cs" />
+    <Compile Include="Messages\NotebookSectionSelected.cs" />
+    <Compile Include="Messages\NotebookSelected.cs" />
     <Compile Include="Model\NotebookDto.cs" />
     <Compile Include="Actors\ActorRegistry.cs" />
     <Compile Include="Actors\RootDirectoryActor.cs" />

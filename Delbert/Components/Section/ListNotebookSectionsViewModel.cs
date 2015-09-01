@@ -50,5 +50,16 @@ namespace Delbert.Components.Section
                 Log.Msg(this, l => l.Error(ex));
             }
         }
+
+        public void SectionSelected(SectionDto section)
+        {
+            if (section == null)
+            {
+                Log.Msg(this, l => l.Warning("Selected section was null"));
+                return;
+            }
+
+            MessageBus.Publish(new NotebookSectionSelected(section));
+        }
     }
 }

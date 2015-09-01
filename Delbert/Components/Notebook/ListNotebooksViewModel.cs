@@ -49,23 +49,15 @@ namespace Delbert.Components.Notebook
             }
         }
 
-        public async void NotebookSelected(NotebookDto notebook)
+        public void NotebookSelected(NotebookDto notebook)
         {
-            if (notebook == null) return;
-
-            try
+            if (notebook == null)
             {
-                var sectionActor = _actorSystem.ActorOf(ActorRegistry.NotebookSection);
+                Log.Msg(this, l => l.Warning("Selected notebook was null"));
+                return;
+            }
 
-                var result =
-                    await
-                        sectionActor.AskWithResultOf<NotebookSectionActor.GetSectionsForNotebookResult>(
-                            new NotebookSectionActor.GetSectionsForNotebook(notebook));
-            }
-            catch (Exception ex)
-            {
-                Log.Msg(this, l => l.Error(ex));
-            }
+            MessageBus.Publish(new NotebookSelected(notebook));
         }
     }
 }
