@@ -40,11 +40,9 @@ namespace Delbert.Actors
 
             var sections = CreateSectionsFromDirectories(subDirectories);
 
-            sections = SetParentNotebook(notebook, sections);
+            var sectionsWithNotebook = SetParentNotebook(notebook, sections);
 
-            sections = await SetPagesForSections(sections);
-
-            return sections;
+            return await SetPagesForSections(sectionsWithNotebook);
         }
 
         private async Task<ImmutableArray<SectionDto>> SetPagesForSections(ImmutableArray<SectionDto> sections)
@@ -53,22 +51,23 @@ namespace Delbert.Actors
 
             return await Task.Run(() =>
             {
-                return sections.ForEach(async section =>
+                sections.ForEach(async section =>
                 {
                     var result =
                         await
                             pageActor.AskWithResultOf<PageActor.GetPagesForSectionResult>(
                                 new PageActor.GetPagesForSection(section));
 
-                    section.Pages = result.Pages;
+                    section.AddPages(result.Pages);
+                });
 
-                }).ToImmutableArray();
+                return sections;
             });
         }
 
         private static ImmutableArray<SectionDto> SetParentNotebook(NotebookDto notebook, ImmutableArray<SectionDto> sections)
         {
-            return sections.ForEach(s => s.Notebook = notebook).ToImmutableArray();
+            return sections.ForEach(s => s.ParentNotebook = notebook).ToImmutableArray();
         }
 
         private ImmutableArray<SectionDto> CreateSectionsFromDirectories(DirectoryInfo[] subDirectories)

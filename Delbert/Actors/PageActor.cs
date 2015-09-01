@@ -45,12 +45,13 @@ namespace Delbert.Actors
 
         private ImmutableArray<PageDto> SetParentSectionAndNotebook(ImmutableArray<PageDto> pages, SectionDto section)
         {
-            return pages.ForEach(page =>
+            pages.ForEach(page =>
             {
-                page.Section = section;
-                page.Notebook = section.Notebook;
+                page.ParentSection = section;
+                page.ParentNotebook = section.ParentNotebook;
+            });
 
-            }).ToImmutableArray();
+            return pages;
         }
 
         private ImmutableArray<PageDto> CreatePagesFromFiles(ImmutableArray<FileInfo> files)
