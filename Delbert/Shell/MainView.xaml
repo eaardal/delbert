@@ -25,7 +25,10 @@
                 <ColumnDefinition Width="0.10*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <ContentControl Grid.Row="0" Grid.Column="2" x:Name="ListSections"></ContentControl>
-            <ContentControl Grid.Row="1" Grid.Column="1" x:Name="ListNotebooks"></ContentControl>
+            <StackPanel Grid.Row="1" Grid.Column="1" >
+                <ContentControl x:Name="ListNotebooks"></ContentControl>
+                <ContentControl x:Name="AddNotebook"></ContentControl>
+            </StackPanel>
             <ContentControl Grid.Row="1" Grid.Column="2" x:Name="Editor"></ContentControl>
             <ContentControl Grid.Row="1" Grid.Column="3" x:Name="ListPages"></ContentControl>
         </Grid>

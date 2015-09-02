@@ -114,6 +114,11 @@
     <Compile Include="Components\Editor\EditorViewModel.cs" />
     <Compile Include="Components\Editor\IEditorViewModel.cs" />
     <Compile Include="Components\ISelectRootDirectoryViewModel.cs" />
+    <Compile Include="Components\Notebook\AddNotebookView.xaml.cs">
+      <DependentUpon>AddNotebookView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Notebook\AddNotebookViewModel.cs" />
+    <Compile Include="Components\Notebook\IAddNotebookViewModel.cs" />
     <Compile Include="Components\Notebook\IListNotebooksViewModel.cs" />
     <Compile Include="Components\Notebook\ListNotebooksView.xaml.cs">
       <DependentUpon>ListNotebooksView.xaml</DependentUpon>
@@ -202,6 +207,10 @@
     <Compile Include="Infrastructure\NotifyPropertyChangedBase.cs" />
     <Compile Include="Infrastructure\XamlHelpers.cs" />
     <Page Include="Components\Editor\EditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\Notebook\AddNotebookView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

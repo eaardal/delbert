@@ -22,13 +22,15 @@ namespace Delbert.Shell
         private IScreen _listSections;
         private IScreen _listPages;
         private IScreen _editor;
+        private IScreen _addNotebook;
 
         public MainViewModel(IIoC ioc, 
             ISelectRootDirectoryViewModel selectRootDirectoryViewModel,
             IListNotebooksViewModel listNotebooksViewModel,
             IListSectionsViewModel listSectionsViewModel,
             IListPagesViewModel listPagesViewModel,
-            IEditorViewModel editorViewModel) : base(ioc)
+            IEditorViewModel editorViewModel,
+            IAddNotebookViewModel addNotebookViewModel) : base(ioc)
         {
             if (selectRootDirectoryViewModel == null)
                 throw new ArgumentNullException(nameof(selectRootDirectoryViewModel));
@@ -45,13 +47,18 @@ namespace Delbert.Shell
             if (editorViewModel == null)
                 throw new ArgumentNullException(nameof(editorViewModel));
 
+            if (addNotebookViewModel == null)
+                throw new ArgumentNullException(nameof(addNotebookViewModel));
+
             SelectRootDirectory = selectRootDirectoryViewModel;
             ListNotebooks = listNotebooksViewModel;
             ListSections = listSectionsViewModel;
             ListPages = listPagesViewModel;
             Editor = editorViewModel;
+            AddNotebook = addNotebookViewModel;
 
             SelectRootDirectory.Activate();
+            AddNotebook.Activate();
 
             MessageBus.Subscribe<RootDirectoryChanged>(OnNewRootDirectory);
         }
@@ -59,6 +66,17 @@ namespace Delbert.Shell
         private void OnNewRootDirectory(RootDirectoryChanged message)
         {
             //TODO: Hide root dir textbox?
+        }
+
+        public IScreen AddNotebook
+        {
+            get { return _addNotebook; }
+            set
+            {
+                if (Equals(value, _addNotebook)) return;
+                _addNotebook = value;
+                NotifyOfPropertyChange(() => AddNotebook);
+            }
         }
 
         public IScreen Editor
