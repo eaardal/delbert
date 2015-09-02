@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Akka.Actor;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Logging.Contracts;
 using Delbert.Model;
@@ -53,12 +54,17 @@ namespace Delbert.Actors
             {
                 sections.ForEach(async section =>
                 {
-                    var result =
+                    var query =
                         await
-                            pageActor.AskWithResultOf<PageActor.GetPagesForSectionResult>(
+                            pageActor.Query(
                                 new PageActor.GetPagesForSection(section));
 
-                    section.AddPages(result.Pages);
+                    query
+                        .WhenResultIs<PageActor.GetPagesForSectionResult>(result =>
+                        {
+                            section.AddPages(result.Pages);
+                        })
+                        .WhenResultIs<Failure>(LogFailure);
                 });
 
                 return sections;

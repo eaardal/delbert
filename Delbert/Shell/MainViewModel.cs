@@ -53,10 +53,10 @@ namespace Delbert.Shell
 
             SelectRootDirectory.Activate();
 
-            MessageBus.Subscribe<NewRootDirectorySet>(OnNewRootDirectory);
+            MessageBus.Subscribe<RootDirectoryChanged>(OnNewRootDirectory);
         }
         
-        private void OnNewRootDirectory(NewRootDirectorySet message)
+        private void OnNewRootDirectory(RootDirectoryChanged message)
         {
             //TODO: Hide root dir textbox?
         }

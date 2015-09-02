@@ -20,5 +20,10 @@ namespace Delbert.Infrastructure
 
             return base.AroundReceive(receive, message);
         }
+
+        protected void LogFailure(Failure failure)
+        {
+            Log.Msg(this, l => l.Error(failure.Exception));
+        }
     }
 }

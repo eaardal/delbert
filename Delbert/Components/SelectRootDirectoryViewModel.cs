@@ -19,7 +19,7 @@ namespace Delbert.Components
             if (actorSystem == null) throw new ArgumentNullException(nameof(actorSystem));
             _actorSystem = actorSystem;
 
-            MessageBus.Subscribe<NewRootDirectorySet>(OnNewRootDirectorySet);
+            MessageBus.Subscribe<RootDirectoryChanged>(OnRootDirectoryChanged);
         }
 
         protected override async void OnActivate()
@@ -33,20 +33,27 @@ namespace Delbert.Components
 
             try
             {
-                var result =
+                var query =
                     await
-                        rootDirectoryActor.AskWithResultOf<RootDirectoryActor.GetRootDirectoryResult>(
-                            new RootDirectoryActor.GetRootDirectory());
+                        rootDirectoryActor.Query(new RootDirectoryActor.GetRootDirectory());
 
-                SetRootDirectory(result.CurrentRootDirectory.FullName);
+                query
+                    .WhenResultIs<RootDirectoryActor.GetRootDirectoryResult>(result =>
+                    {
+                        if (result.Success)
+                        {
+                            SetRootDirectory(result.CurrentRootDirectory.FullName);
+                        }
+                    })
+                    .LogFailure();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
+                Log.Msg(this, l => l.Error(ex));
             }
         }
 
-        private void OnNewRootDirectorySet(NewRootDirectorySet message)
+        private void OnRootDirectoryChanged(RootDirectoryChanged message)
         {
             SetRootDirectory(message.RootDirectory.FullName);
         }

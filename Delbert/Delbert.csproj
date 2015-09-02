@@ -105,6 +105,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Actors\CommandLineArgsParserActor.cs" />
     <Compile Include="Actors\SectionActor.cs" />
     <Compile Include="Actors\PageActor.cs" />
     <Compile Include="Components\Editor\EditorView.xaml.cs">
@@ -134,6 +135,7 @@
     <Compile Include="Components\SelectRootDirectoryViewModel.cs" />
     <Compile Include="Infrastructure\Abstract\ConductorViewModel.cs" />
     <Compile Include="Infrastructure\Abstract\IConductorViewModel.cs" />
+    <Compile Include="Infrastructure\Abstract\IEnvironmentAdapter.cs" />
     <Compile Include="Infrastructure\Abstract\IScreenViewModel.cs" />
     <Compile Include="Infrastructure\Abstract\IViewModelBase.cs" />
     <Compile Include="Infrastructure\Abstract\ScreenViewModel.cs" />
@@ -148,11 +150,11 @@
     <Compile Include="Infrastructure\Converters\IsNotebookSelectedToBackgroundConverter.cs" />
     <Compile Include="Infrastructure\Converters\IsPageSelectedToBackgroundConverter.cs" />
     <Compile Include="Infrastructure\Converters\IsSectionSelectedToBackgroundConverter.cs" />
+    <Compile Include="Infrastructure\EnvironmentAdapter.cs" />
     <Compile Include="Infrastructure\Exceptions\UnexpectedActorAnswer.cs" />
     <Compile Include="Infrastructure\IActorSelectionAdapter.cs" />
     <Compile Include="Infrastructure\IActorSystemAdapter.cs" />
     <Compile Include="Infrastructure\LoggingReceiveActor.cs" />
-    <Compile Include="Messages\NewRootDirectorySet.cs" />
     <Compile Include="Messages\RootDirectoryChanged.cs" />
     <Compile Include="Messages\SectionSelected.cs" />
     <Compile Include="Messages\NotebookSelected.cs" />

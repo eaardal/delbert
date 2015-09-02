@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Akka.Actor;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Logging.Contracts;
@@ -16,74 +17,41 @@ namespace Delbert.Actors
         {
             if (messageBus == null) throw new ArgumentNullException(nameof(messageBus));
             _messageBus = messageBus;
-
-            SetRootDirectoryFromCommandLineArgumentsIfExists();
-
+            
             Receive<SetRootDirectory>(msg => OnSetRootDirectory(msg));
         }
 
-        private void SetRootDirectoryFromCommandLineArgumentsIfExists()
+        protected override async void PreStart()
         {
-            var args = Environment.GetCommandLineArgs();
+            await SetRootDirectoryFromCommandLineArgumentsIfExists();
 
-            int matchIndex;
-            if (IsRootDirectoryArgument(args, out matchIndex))
-            {
-                var rootDirectoryPathIndex = matchIndex + 1;
-
-                var directory = args[rootDirectoryPathIndex].ToDirectoryInfo();
-
-                if (directory.Exists)
-                {
-                    SetRootDir(directory);
-                }
-                else
-                {
-                    Log.Msg(this, l => l.Warning("Given directory does not exist"));
-                }
-            }
+            base.PreStart();
         }
 
-        private bool IsRootDirectoryArgument(string[] args, out int rootDirectoryArgSwitchIndex)
+        private async Task SetRootDirectoryFromCommandLineArgumentsIfExists()
         {
-            if (args.Length < 2)
+            try
             {
-                rootDirectoryArgSwitchIndex = -1;
-                return false;
-            }
+                var cmdArgsActor = Context.ActorOf(ActorRegistry.CommandLineArgsParser);
 
-            var validSwitches = new[] { "-rd", "-path" };
+                var query =
+                    await cmdArgsActor.Query(new CommandLineArgsParserActor.GetRootDirectoryFromCommandLineArgs());
 
-            var foundMatch = false;
-            var matchIndex = -1;
-
-            for (var i = 0; i < args.Length; i++)
-            {
-                try
-                {
-                    var arg = args[i];
-                    var nextArg = args[i + 1];
-
-                    if (!string.IsNullOrEmpty(arg) && !string.IsNullOrEmpty(nextArg))
+                query
+                    .WhenResultIs<CommandLineArgsParserActor.GetRootDirectoryFromCommandLineArgsResult>(result =>
                     {
-                        var argSwitch = arg;
-                        
-                        if (validSwitches.ContainsAny(argSwitch))
+                        if (result.Success)
                         {
-                            foundMatch = true;
-                            matchIndex = i;
-                            break;
+                            SetRootDir(result.Directory);
                         }
-                    }
-                }
-                catch (IndexOutOfRangeException)
-                {
-                    // Ignore and continue
-                }
-            }
+                    })
+                    .WhenResultIs<Failure>(fail => Log.Msg(this, l => l.Error(fail.Exception)));
 
-            rootDirectoryArgSwitchIndex = matchIndex;
-            return foundMatch;
+            }
+            catch (Exception ex)
+            {
+                Log.Msg(this, l => l.Error(ex));
+            }
         }
 
         #region Become
@@ -107,21 +75,14 @@ namespace Delbert.Actors
         {
             _rootDirectory = directory;
 
-            _messageBus.Publish(new NewRootDirectorySet(_rootDirectory));
+            _messageBus.Publish(new RootDirectoryChanged(_rootDirectory));
 
             Become(Configured);
         }
 
         private void OnGetRootDirectory(GetRootDirectory msg)
         {
-            if (_rootDirectory != null)
-            {
-                Sender.Tell(new GetRootDirectoryResult(_rootDirectory), Self);
-            }
-            else
-            {
-                Sender.Tell(new NoRootDirectorySet(), Self);
-            }
+            Sender.Tell(new GetRootDirectoryResult(_rootDirectory), Self);
         }
 
         #endregion
@@ -145,11 +106,12 @@ namespace Delbert.Actors
         {
             public GetRootDirectoryResult(DirectoryInfo currentRootDirectory)
             {
-                if (currentRootDirectory == null) throw new ArgumentNullException(nameof(currentRootDirectory));
                 CurrentRootDirectory = currentRootDirectory;
+                Success = CurrentRootDirectory != null && CurrentRootDirectory.Exists;
             }
 
             public DirectoryInfo CurrentRootDirectory { get; }
+            public bool Success { get; }
         }
 
         public class NoRootDirectorySet

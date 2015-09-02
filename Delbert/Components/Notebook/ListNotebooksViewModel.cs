@@ -24,24 +24,31 @@ namespace Delbert.Components.Notebook
 
             Notebooks = new ItemChangeAwareObservableCollection<NotebookDto>();
 
-            MessageBus.Subscribe<NewRootDirectorySet>(async msg => await OnNewRootDirectory(msg));
+            MessageBus.Subscribe<RootDirectoryChanged>(async msg => await OnNewRootDirectory(msg));
         }
 
         public ItemChangeAwareObservableCollection<NotebookDto> Notebooks { get; set; }
 
-        private async Task OnNewRootDirectory(NewRootDirectorySet message)
+        private async Task OnNewRootDirectory(RootDirectoryChanged message)
         {
             try
             {
                 var notebookActor = _actorSystem.ActorOf(ActorRegistry.Notebook);
 
-                var result = await notebookActor.AskWithResultOf<NotebookActor.GetNotebooksResult>(new NotebookActor.GetNotebooks());
+                var query = await notebookActor.Query(new NotebookActor.GetNotebooks());
 
-                await DoOnUiDispatcherAsync(() =>
-                {
-                    Notebooks.Clear();
-                    result.Notebooks.ForEach(n => Notebooks.Add(n));
-                });
+                query
+                    .WhenResultIs<NotebookActor.GetNotebooksResult>(async result =>
+                    {
+                        await DoOnUiDispatcherAsync(() =>
+                        {
+                            Notebooks.Clear();
+                            result.Notebooks.ForEach(n => Notebooks.Add(n));
+                        });
+                    })
+                    .LogFailure();
+
+
             }
             catch (Exception ex)
             {

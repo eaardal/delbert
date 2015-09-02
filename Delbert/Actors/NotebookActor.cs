@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Akka.Actor;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Logging.Contracts;
 using Delbert.Model;
@@ -57,12 +58,17 @@ namespace Delbert.Actors
             {
                 notebooks.ForEach(async notebook =>
                 {
-                    var result =
+                    var query =
                         await
-                            notebookSectionActor.AskWithResultOf<SectionActor.GetSectionsForNotebookResult>(
+                            notebookSectionActor.Query(
                                 new SectionActor.GetSectionsForNotebook(notebook));
 
-                    notebook.AddSections(result.Sections);
+                    query
+                        .WhenResultIs<SectionActor.GetSectionsForNotebookResult>(result =>
+                        {
+                            notebook.AddSections(result.Sections);
+                        })
+                        .LogFailure();
                 });
 
                 return notebooks;
@@ -95,12 +101,19 @@ namespace Delbert.Actors
         {
             var rootDirectoryActor = Context.ActorSelection(ActorRegistry.RootDirectory);
 
-            var result =
-                await
-                    rootDirectoryActor.AskWithResultOf<RootDirectoryActor.GetRootDirectoryResult>(
-                        new RootDirectoryActor.GetRootDirectory());
+            var answer = await rootDirectoryActor.Ask(new RootDirectoryActor.GetRootDirectory());
 
-            return result.CurrentRootDirectory;
+            if (answer is RootDirectoryActor.GetRootDirectoryResult)
+            {
+                return (answer as RootDirectoryActor.GetRootDirectoryResult).CurrentRootDirectory;
+            }
+
+            if (answer is Failure)
+            {
+                var failure = answer as Failure;
+                Log.Msg(this, l => l.Error(failure.Exception));
+            }
+            return null;
         }
 
         #region Messages

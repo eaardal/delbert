@@ -1,14 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Delbert.Messages
 {
     internal class RootDirectoryChanged
     {
-        public RootDirectoryChanged(DirectoryInfo directory)
-        {
-            Directory = directory;
-        }
+        public DirectoryInfo RootDirectory { get; }
 
-        public DirectoryInfo Directory { get; }
+        public RootDirectoryChanged(DirectoryInfo rootDirectory)
+        {
+            if (rootDirectory == null) throw new ArgumentNullException(nameof(rootDirectory));
+            RootDirectory = rootDirectory;
+        }
     }
 }
