@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Delbert.Actors.Facades.Abstract;
 using Delbert.Infrastructure.Abstract;
 using Delbert.Messages;
 using Delbert.Model;
@@ -11,11 +12,13 @@ namespace Delbert.Components.Editor
 {
     public sealed class EditorViewModel : ScreenViewModel, IEditorViewModel
     {
+        private readonly IProcessFacade _process;
         private string _text;
         private PageDto _page;
 
-        public EditorViewModel(IIoC ioc) : base(ioc)
+        public EditorViewModel(IProcessFacade process, IIoC ioc) : base(ioc)
         {
+            _process = process;
             MessageBus.Subscribe<PageSelected>(async msg => await OnPageSelected(msg));
         }
 
@@ -54,6 +57,14 @@ namespace Delbert.Components.Editor
                 if (Equals(value, _page)) return;
                 _page = value;
                 NotifyOfPropertyChange(() => Page);
+            }
+        }
+
+        public void EditorSelected()
+        {
+            if (Page != null)
+            {
+                _process.StartProcessForFile(Page.File);
             }
         }
     }

@@ -1,27 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
+using Caliburn.Micro;
+using Delbert.Actors.Facades.Abstract;
 using Delbert.Infrastructure.Abstract;
+using Delbert.Messages;
 
 namespace Delbert.Components.Notebook
 {
     public sealed class AddNotebookViewModel : ScreenViewModel, IAddNotebookViewModel
     {
+        private readonly INotebookFacade _notebook;
+        private readonly IRootDirectoryFacade _rootDirectory;
         private Visibility _showReadOnlyFieldsVisibility;
         private Visibility _showEditFieldsVisibility;
+        private string _newNotebookName;
 
-        public AddNotebookViewModel(IIoC ioc) : base(ioc)
+        public AddNotebookViewModel(INotebookFacade notebook, IRootDirectoryFacade rootDirectory, IIoC ioc) : base(ioc)
         {
-
+            if (notebook == null) throw new ArgumentNullException(nameof(notebook));
+            _notebook = notebook;
+            _rootDirectory = rootDirectory;
         }
 
         protected override void OnActivate()
         {
-            ShowReadOnlyFieldsVisibility = Visibility.Visible;
-            ShowEditFieldsVisibility = Visibility.Collapsed;
+            ShowReadOnly();
         }
 
         public Visibility ShowEditFieldsVisibility
@@ -46,15 +55,59 @@ namespace Delbert.Components.Notebook
             }
         }
 
+        public string NewNotebookName
+        {
+            get { return _newNotebookName; }
+            set
+            {
+                if (value == _newNotebookName) return;
+                _newNotebookName = value;
+                NotifyOfPropertyChange(() => NewNotebookName);
+            }
+        }
+
         public void CreateNew()
+        {
+            ShowEdit();
+        }
+
+        public async void KeyPressed(ActionExecutionContext context)
+        {
+            await TryCreateNewNotebook(context);
+        }
+
+        private async Task TryCreateNewNotebook(ActionExecutionContext context)
+        {
+            if (string.IsNullOrEmpty(NewNotebookName)) return;
+
+            var keyArgs = context.EventArgs as KeyEventArgs;
+
+            if (keyArgs?.Key == Key.Enter)
+            {
+                var rootDirectory = await _rootDirectory.GetRootDirectory();
+
+                var newNotebookDirectory = rootDirectory.CreateSubdirectory(NewNotebookName);
+
+                _notebook.CreateNotebook(newNotebookDirectory);
+
+                ShowReadOnly();
+
+                NewNotebookName = null;
+
+                MessageBus.Publish(new NotebookCreated());
+            }
+        }
+
+        private void ShowReadOnly()
+        {
+            ShowReadOnlyFieldsVisibility = Visibility.Visible;
+            ShowEditFieldsVisibility = Visibility.Collapsed;
+        }
+
+        private void ShowEdit()
         {
             ShowReadOnlyFieldsVisibility = Visibility.Collapsed;
             ShowEditFieldsVisibility = Visibility.Visible;
-        }
-
-        public void KeyPressed(object sender, object args)
-        {
-            
         }
     }
 }

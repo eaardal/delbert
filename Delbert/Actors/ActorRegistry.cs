@@ -10,5 +10,6 @@ namespace Delbert.Actors
         public static ActorMetadata Section => new ActorMetadata(typeof(SectionActor));
         public static ActorMetadata Page => new ActorMetadata(typeof(PageActor));
         public static ActorMetadata CommandLineArgsParser => new ActorMetadata(typeof(CommandLineArgsParserActor));
+        public static ActorMetadata Process => new ActorMetadata(typeof(ProcessActor));
     }
 }

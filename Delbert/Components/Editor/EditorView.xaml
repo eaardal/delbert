@@ -4,11 +4,39 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Delbert.Components.Editor"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TextBox x:Name="Text" HorizontalAlignment="Stretch" 
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <Border Grid.Row="0" Grid.Column="0" Padding="3" BorderThickness="1" BorderBrush="LightGray">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" Padding="3" Background="#EDEDED" BorderThickness="1" BorderBrush="DarkGray" Margin="0,0,0,2">
+                    <TextBlock Text="Edit page" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <cal:ActionMessage MethodName="EditorSelected"></cal:ActionMessage>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Border>
+                <TextBox Grid.Row="1" x:Name="Text" HorizontalAlignment="Stretch" 
                      VerticalAlignment="Stretch" TextWrapping="Wrap" AcceptsReturn="True" 
-                     AcceptsTab="True"></TextBox>
+                     AcceptsTab="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                 IsEnabled="True" IsReadOnly="True" IsReadOnlyCaretVisible="True" BorderThickness="0"
+                 >
+                </TextBox>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

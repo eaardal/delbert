@@ -4,7 +4,7 @@ using Akka.Actor;
 
 namespace Delbert.Actors.Facades.Abstract
 {
-    internal interface IRootDirectoryFacade
+    public interface IRootDirectoryFacade
     {
         void SetRootDirectory(DirectoryInfo directory);
         void SetRootDirectory(ActorSelection actorSelection, DirectoryInfo directory);

@@ -80,6 +80,7 @@
       <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -109,13 +110,16 @@
     <Compile Include="Actors\Facades\Abstract\ICommandLineArgsParserFacade.cs" />
     <Compile Include="Actors\Facades\Abstract\INotebookFacade.cs" />
     <Compile Include="Actors\Facades\Abstract\IPageFacade.cs" />
+    <Compile Include="Actors\Facades\Abstract\IProcessFacade.cs" />
     <Compile Include="Actors\Facades\Abstract\IRootDirectoryFacade.cs" />
     <Compile Include="Actors\Facades\Abstract\ISectionFacade.cs" />
     <Compile Include="Actors\Facades\CommandLineArgsParserFacade.cs" />
     <Compile Include="Actors\Facades\NotebookFacade.cs" />
     <Compile Include="Actors\Facades\PageFacade.cs" />
+    <Compile Include="Actors\Facades\ProcessFacade.cs" />
     <Compile Include="Actors\Facades\RootDirectoryFacade.cs" />
     <Compile Include="Actors\Facades\SectionFacade.cs" />
+    <Compile Include="Actors\ProcessActor.cs" />
     <Compile Include="Actors\SectionActor.cs" />
     <Compile Include="Actors\PageActor.cs" />
     <Compile Include="Components\Editor\EditorView.xaml.cs">
@@ -151,6 +155,7 @@
     <Compile Include="Infrastructure\Abstract\ConductorViewModel.cs" />
     <Compile Include="Infrastructure\Abstract\IConductorViewModel.cs" />
     <Compile Include="Infrastructure\Abstract\IEnvironmentAdapter.cs" />
+    <Compile Include="Infrastructure\Abstract\IProcessAdapter.cs" />
     <Compile Include="Infrastructure\Abstract\IScreenViewModel.cs" />
     <Compile Include="Infrastructure\Abstract\IViewModelBase.cs" />
     <Compile Include="Infrastructure\Abstract\ScreenViewModel.cs" />
@@ -171,6 +176,8 @@
     <Compile Include="Infrastructure\IActorSelectionAdapter.cs" />
     <Compile Include="Infrastructure\IActorSystemAdapter.cs" />
     <Compile Include="Infrastructure\LoggingReceiveActor.cs" />
+    <Compile Include="Infrastructure\ProcessAdapter.cs" />
+    <Compile Include="Messages\NotebookCreated.cs" />
     <Compile Include="Messages\RootDirectoryChanged.cs" />
     <Compile Include="Messages\SectionSelected.cs" />
     <Compile Include="Messages\NotebookSelected.cs" />

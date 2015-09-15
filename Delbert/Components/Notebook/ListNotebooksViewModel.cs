@@ -26,6 +26,12 @@ namespace Delbert.Components.Notebook
             Notebooks = new ItemChangeAwareObservableCollection<NotebookDto>();
 
             MessageBus.Subscribe<RootDirectoryChanged>(async msg => await OnNewRootDirectory(msg));
+            MessageBus.Subscribe<NotebookCreated>(async msg => await OnNotebookCreated(msg));
+        }
+
+        private async Task OnNotebookCreated(NotebookCreated msg)
+        {
+            await GetNotebooks();
         }
 
         public ItemChangeAwareObservableCollection<NotebookDto> Notebooks { get; set; }

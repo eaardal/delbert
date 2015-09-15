@@ -7,5 +7,6 @@ namespace Delbert.Components.Editor
     {
         string Text { get; }
         PageDto Page { get; }
+        void EditorSelected();
     }
 }

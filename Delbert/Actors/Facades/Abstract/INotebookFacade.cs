@@ -6,7 +6,7 @@ using Delbert.Model;
 
 namespace Delbert.Actors.Facades.Abstract
 {
-    internal interface INotebookFacade
+    public interface INotebookFacade
     {
         void CreateNotebook(DirectoryInfo directory);
         void CreateNotebook(IUntypedActorContext context, DirectoryInfo directory);
