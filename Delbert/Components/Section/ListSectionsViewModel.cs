@@ -23,6 +23,15 @@ namespace Delbert.Components.Section
             Sections = new ItemChangeAwareObservableCollection<SectionDto>();
 
             MessageBus.Subscribe<NotebookSelected>(async msg => await OnNotebookSelected(msg));
+            MessageBus.Subscribe<SectionCreated>(async msg => await OnSectionCreated(msg));
+        }
+
+        private async Task OnSectionCreated(SectionCreated msg)
+        {
+            await DoOnUiDispatcherAsync(async () =>
+            {
+                await GetSections(msg.NewSectionParentNotebook);
+            });
         }
 
         public ItemChangeAwareObservableCollection<SectionDto> Sections { get; }
@@ -31,16 +40,21 @@ namespace Delbert.Components.Section
         {
             try
             {
-                await DoOnUiDispatcherAsync(() =>
-                {
-                    Sections.Clear();
-                    msg.Notebook.Sections.ForEach(s => Sections.Add(s));
-                });
+                await GetSections(msg.Notebook);
             }
             catch (Exception ex)
             {
                 Log.Msg(this, l => l.Error(ex));
             }
+        }
+
+        private async Task GetSections(NotebookDto notebook)
+        {
+            await DoOnUiDispatcherAsync(() =>
+            {
+                Sections.Clear();
+                notebook.Sections.ForEach(s => Sections.Add(s));
+            });
         }
 
         public void SectionSelected(SectionDto section)

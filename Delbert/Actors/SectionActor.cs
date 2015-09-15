@@ -21,9 +21,20 @@ namespace Delbert.Actors
             _page = page;
 
             Receive<GetSectionsForNotebook>(async msg => await OnGetSectionsForNotebook(msg));
+            Receive<CreateNewSection>(msg => OnCreateNewSection(msg));
         }
 
         #region Message Handlers
+
+        private void OnCreateNewSection(CreateNewSection msg)
+        {
+            var directory = msg.Directory;
+
+            if (!directory.Exists)
+            {
+                directory.Create();
+            }
+        }
 
         private async Task OnGetSectionsForNotebook(GetSectionsForNotebook msg)
         {
@@ -109,6 +120,16 @@ namespace Delbert.Actors
             public GetSectionsForNotebookResult(ImmutableArray<SectionDto> sections)
             {
                 Sections = sections;
+            }
+        }
+
+        public class CreateNewSection
+        {
+            public DirectoryInfo Directory { get; }
+
+            public CreateNewSection(DirectoryInfo directory)
+            {
+                Directory = directory;
             }
         }
 

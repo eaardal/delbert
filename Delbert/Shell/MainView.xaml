@@ -12,25 +12,26 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <ContentControl Grid.Row="0" x:Name="SelectRootDirectory" Margin="10" HorizontalAlignment="Center"></ContentControl>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="10,0,10,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" MinHeight="28"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.10*"></ColumnDefinition>
                 <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                <ColumnDefinition Width="0.50*"></ColumnDefinition>
+                <ColumnDefinition Width="0.70*"></ColumnDefinition>
                 <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                <ColumnDefinition Width="0.10*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <ContentControl Grid.Row="0" Grid.Column="2" x:Name="ListSections"></ContentControl>
-            <StackPanel Grid.Row="1" Grid.Column="1" >
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                <ContentControl x:Name="ListSections"></ContentControl>
+                <ContentControl x:Name="AddSection"></ContentControl>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="0" >
                 <ContentControl x:Name="ListNotebooks"></ContentControl>
                 <ContentControl x:Name="AddNotebook"></ContentControl>
             </StackPanel>
-            <ContentControl Grid.Row="1" Grid.Column="2" x:Name="Editor"></ContentControl>
-            <ContentControl Grid.Row="1" Grid.Column="3" x:Name="ListPages"></ContentControl>
+            <ContentControl Grid.Row="1" Grid.Column="1" x:Name="Editor"></ContentControl>
+            <ContentControl Grid.Row="1" Grid.Column="2" x:Name="ListPages"></ContentControl>
         </Grid>
     </Grid>
 </UserControl>

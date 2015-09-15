@@ -143,6 +143,11 @@
       <DependentUpon>ListPagesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\Page\ListPagesViewModel.cs" />
+    <Compile Include="Components\Section\AddSectionView.xaml.cs">
+      <DependentUpon>AddSectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Section\AddSectionViewModel.cs" />
+    <Compile Include="Components\Section\IAddSectionViewModel.cs" />
     <Compile Include="Components\Section\IListSectionsViewModel.cs" />
     <Compile Include="Components\Section\ListSectionsView.xaml.cs">
       <DependentUpon>ListSectionsView.xaml</DependentUpon>
@@ -179,6 +184,7 @@
     <Compile Include="Infrastructure\ProcessAdapter.cs" />
     <Compile Include="Messages\NotebookCreated.cs" />
     <Compile Include="Messages\RootDirectoryChanged.cs" />
+    <Compile Include="Messages\SectionCreated.cs" />
     <Compile Include="Messages\SectionSelected.cs" />
     <Compile Include="Messages\NotebookSelected.cs" />
     <Compile Include="Messages\PageSelected.cs" />
@@ -237,6 +243,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Components\Page\ListPagesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\Section\AddSectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

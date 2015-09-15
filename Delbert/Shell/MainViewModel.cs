@@ -23,6 +23,7 @@ namespace Delbert.Shell
         private IScreen _listPages;
         private IScreen _editor;
         private IScreen _addNotebook;
+        private IScreen _addSection;
 
         public MainViewModel(IIoC ioc, 
             ISelectRootDirectoryViewModel selectRootDirectoryViewModel,
@@ -30,7 +31,9 @@ namespace Delbert.Shell
             IListSectionsViewModel listSectionsViewModel,
             IListPagesViewModel listPagesViewModel,
             IEditorViewModel editorViewModel,
-            IAddNotebookViewModel addNotebookViewModel) : base(ioc)
+            IAddNotebookViewModel addNotebookViewModel,
+            IAddSectionViewModel addSectionViewModel
+            ) : base(ioc)
         {
             if (selectRootDirectoryViewModel == null)
                 throw new ArgumentNullException(nameof(selectRootDirectoryViewModel));
@@ -50,16 +53,21 @@ namespace Delbert.Shell
             if (addNotebookViewModel == null)
                 throw new ArgumentNullException(nameof(addNotebookViewModel));
 
+            if (addSectionViewModel == null)
+                throw new ArgumentNullException(nameof(addSectionViewModel));
+
             SelectRootDirectory = selectRootDirectoryViewModel;
             ListNotebooks = listNotebooksViewModel;
             ListSections = listSectionsViewModel;
             ListPages = listPagesViewModel;
             Editor = editorViewModel;
             AddNotebook = addNotebookViewModel;
+            AddSection = addSectionViewModel;
 
             SelectRootDirectory.Activate();
             AddNotebook.Activate();
             ListNotebooks.Activate();
+            AddSection.Activate();
 
             MessageBus.Subscribe<RootDirectoryChanged>(OnNewRootDirectory);
         }
@@ -67,6 +75,17 @@ namespace Delbert.Shell
         private void OnNewRootDirectory(RootDirectoryChanged message)
         {
             //TODO: Hide root dir textbox?
+        }
+
+        public IScreen AddSection
+        {
+            get { return _addSection; }
+            set
+            {
+                if (Equals(value, _addSection)) return;
+                _addSection = value;
+                NotifyOfPropertyChange(() => AddSection);
+            }
         }
 
         public IScreen AddNotebook

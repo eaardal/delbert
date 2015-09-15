@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Immutable;
+using System.IO;
 using System.Threading.Tasks;
 using Akka.Actor;
 using Delbert.Actors.Facades.Abstract;
@@ -14,6 +15,13 @@ namespace Delbert.Actors.Facades
         public SectionFacade(IActorSystemAdapter actorSystem, ILogger logger) : base(actorSystem, logger)
         {
             
+        }
+
+        public void CreateSection(DirectoryInfo directory)
+        {
+            var actor = ActorSystem.ActorOf(ActorRegistry.Section);
+
+            actor.Tell(new SectionActor.CreateNewSection(directory));
         }
 
         public async Task<ImmutableArray<SectionDto>> GetSectionsForNotebook(NotebookDto notebook)

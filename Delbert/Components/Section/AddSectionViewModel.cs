@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,24 +7,32 @@ using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
 using Delbert.Actors.Facades.Abstract;
+using Delbert.Components.Notebook;
 using Delbert.Infrastructure.Abstract;
 using Delbert.Messages;
+using Delbert.Model;
 
-namespace Delbert.Components.Notebook
+namespace Delbert.Components.Section
 {
-    public sealed class AddNotebookViewModel : ScreenViewModel, IAddNotebookViewModel
+    public class AddSectionViewModel : ScreenViewModel, IAddSectionViewModel
     {
-        private readonly INotebookFacade _notebook;
-        private readonly IRootDirectoryFacade _rootDirectory;
+        private readonly ISectionFacade _section;
         private Visibility _showReadOnlyFieldsVisibility;
         private Visibility _showEditFieldsVisibility;
-        private string _newNotebookName;
+        private string _newSectionName;
+        private NotebookDto _selectedNotebook;
 
-        public AddNotebookViewModel(INotebookFacade notebook, IRootDirectoryFacade rootDirectory, IIoC ioc) : base(ioc)
+        public AddSectionViewModel(ISectionFacade section, IIoC ioc) : base(ioc)
         {
-            if (notebook == null) throw new ArgumentNullException(nameof(notebook));
-            _notebook = notebook;
-            _rootDirectory = rootDirectory;
+            if (section == null) throw new ArgumentNullException(nameof(section));
+            _section = section;
+
+            MessageBus.Subscribe<NotebookSelected>(OnNotebookSelected);
+        }
+
+        private void OnNotebookSelected(NotebookSelected message)
+        {
+            _selectedNotebook = message.Notebook;
         }
 
         protected override void OnActivate()
@@ -55,14 +62,14 @@ namespace Delbert.Components.Notebook
             }
         }
 
-        public string NewNotebookName
+        public string NewSectionName
         {
-            get { return _newNotebookName; }
+            get { return _newSectionName; }
             set
             {
-                if (value == _newNotebookName) return;
-                _newNotebookName = value;
-                NotifyOfPropertyChange(() => NewNotebookName);
+                if (value == _newSectionName) return;
+                _newSectionName = value;
+                NotifyOfPropertyChange(() => NewSectionName);
             }
         }
 
@@ -71,36 +78,34 @@ namespace Delbert.Components.Notebook
             ShowEdit();
         }
 
-        public async void KeyPressed(ActionExecutionContext context)
+        public void KeyPressed(ActionExecutionContext context)
         {
-            await TryCreateNewNotebook(context);
+            TryCreateNewNotebook(context);
         }
 
-        private async Task TryCreateNewNotebook(ActionExecutionContext context)
+        private void TryCreateNewNotebook(ActionExecutionContext context)
         {
-            if (string.IsNullOrEmpty(NewNotebookName)) return;
+            if (string.IsNullOrEmpty(NewSectionName) || _selectedNotebook == null || _selectedNotebook.Directory.Exists == false) return;
 
             var keyArgs = context.EventArgs as KeyEventArgs;
 
             if (keyArgs?.Key == Key.Enter)
             {
-                await CreateNotebook();
+                CreateSection();
 
-                NewNotebookName = null;
+                NewSectionName = null;
 
                 ShowReadOnly();
 
-                MessageBus.Publish(new NotebookCreated());
+                MessageBus.Publish(new SectionCreated(_selectedNotebook));
             }
         }
 
-        private async Task CreateNotebook()
+        private void CreateSection()
         {
-            var rootDirectory = await _rootDirectory.GetRootDirectory();
+            var newSectionDirectory = _selectedNotebook.Directory.CreateSubdirectory(NewSectionName);
 
-            var newNotebookDirectory = rootDirectory.CreateSubdirectory(NewNotebookName);
-
-            _notebook.CreateNotebook(newNotebookDirectory);
+            _section.CreateSection(newSectionDirectory);
         }
 
         private void ShowReadOnly()
