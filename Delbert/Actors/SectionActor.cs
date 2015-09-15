@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Akka.Actor;
+using Delbert.Actors.Facades.Abstract;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Logging.Contracts;
 using Delbert.Model;
@@ -12,8 +13,13 @@ namespace Delbert.Actors
 {
     public class SectionActor : LoggingReceiveActor
     {
-        public SectionActor(ILogger log) : base(log)
+        private readonly IPageFacade _page;
+
+        public SectionActor(IPageFacade page, ILogger log) : base(log)
         {
+            if (page == null) throw new ArgumentNullException(nameof(page));
+            _page = page;
+
             Receive<GetSectionsForNotebook>(async msg => await OnGetSectionsForNotebook(msg));
         }
 
@@ -54,17 +60,9 @@ namespace Delbert.Actors
             {
                 sections.ForEach(async section =>
                 {
-                    var query =
-                        await
-                            pageActor.Query(
-                                new PageActor.GetPagesForSection(section));
+                    var pages = await _page.GetPagesForSection(pageActor, section);
 
-                    query
-                        .WhenResultIs<PageActor.GetPagesForSectionResult>(result =>
-                        {
-                            section.AddPages(result.Pages);
-                        })
-                        .WhenResultIs<Failure>(LogFailure);
+                    section.AddPages(pages);
                 });
 
                 return sections;

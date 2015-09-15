@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Akka.Actor;
 using Delbert.Actors;
+using Delbert.Actors.Facades.Abstract;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Abstract;
 using Delbert.Messages;
@@ -11,59 +12,15 @@ namespace Delbert.Components
 {
     class SelectRootDirectoryViewModel : ScreenViewModel, ISelectRootDirectoryViewModel
     {
-        private readonly IActorSystemAdapter _actorSystem;
+        private readonly IRootDirectoryFacade _rootDirectory;
         private string _rootDirectoryPath;
 
-        public SelectRootDirectoryViewModel(IIoC ioc, IActorSystemAdapter actorSystem) : base(ioc)
+        public SelectRootDirectoryViewModel(IIoC ioc, IRootDirectoryFacade rootDirectory) : base(ioc)
         {
-            if (actorSystem == null) throw new ArgumentNullException(nameof(actorSystem));
-            _actorSystem = actorSystem;
+            if (rootDirectory == null) throw new ArgumentNullException(nameof(rootDirectory));
+            _rootDirectory = rootDirectory;
 
             MessageBus.Subscribe<RootDirectoryChanged>(OnRootDirectoryChanged);
-        }
-
-        protected override async void OnActivate()
-        {
-            await GetExistingRootDirectory();
-        }
-
-        private async Task GetExistingRootDirectory()
-        {
-            var rootDirectoryActor = _actorSystem.ActorSelection(ActorRegistry.RootDirectory);
-
-            try
-            {
-                var query =
-                    await
-                        rootDirectoryActor.Query(new RootDirectoryActor.GetRootDirectory());
-
-                query
-                    .WhenResultIs<RootDirectoryActor.GetRootDirectoryResult>(result =>
-                    {
-                        if (result.Success)
-                        {
-                            SetRootDirectory(result.CurrentRootDirectory.FullName);
-                        }
-                    })
-                    .LogFailure();
-            }
-            catch (Exception ex)
-            {
-                Log.Msg(this, l => l.Error(ex));
-            }
-        }
-
-        private void OnRootDirectoryChanged(RootDirectoryChanged message)
-        {
-            SetRootDirectory(message.RootDirectory.FullName);
-        }
-
-        private void SetRootDirectory(string rootDirectoryPath)
-        {
-            if (string.IsNullOrEmpty(RootDirectoryPath) || (!string.IsNullOrEmpty(rootDirectoryPath) && rootDirectoryPath != RootDirectoryPath))
-            {
-                RootDirectoryPath = rootDirectoryPath;
-            }
         }
 
         public string RootDirectoryPath
@@ -82,13 +39,39 @@ namespace Delbert.Components
             var dialog = new FolderBrowserDialog();
 
             dialog.ShowDialog();
-            
+
+            if (string.IsNullOrEmpty(dialog.SelectedPath)) return;
+
             var directory = dialog.SelectedPath.ToDirectoryInfo();
 
-            var rootDirectory = _actorSystem.ActorSelection(ActorRegistry.RootDirectory);
-            rootDirectory.Tell(new RootDirectoryActor.SetRootDirectory(directory));
+            _rootDirectory.SetRootDirectory(directory);
 
             SetRootDirectory(dialog.SelectedPath);
+        }
+
+        protected override async void OnActivate()
+        {
+            await GetExistingRootDirectory();
+        }
+
+        private async Task GetExistingRootDirectory()
+        {
+            var directory = await _rootDirectory.GetRootDirectory();
+            
+            SetRootDirectory(directory.FullName);
+        }
+        
+        private void SetRootDirectory(string rootDirectoryPath)
+        {
+            if (string.IsNullOrEmpty(RootDirectoryPath) || (!string.IsNullOrEmpty(rootDirectoryPath) && rootDirectoryPath != RootDirectoryPath))
+            {
+                RootDirectoryPath = rootDirectoryPath;
+            }
+        }
+        
+        private void OnRootDirectoryChanged(RootDirectoryChanged message)
+        {
+            SetRootDirectory(message.RootDirectory.FullName);
         }
     }
 }

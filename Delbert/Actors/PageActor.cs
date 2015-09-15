@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Logging.Contracts;
 using Delbert.Model;
@@ -33,6 +32,8 @@ namespace Delbert.Actors
                 Log.Msg(this, l => l.Error(ex));
             }
         }
+
+        #endregion
 
         private ImmutableArray<PageDto> GetPages(SectionDto section)
         {
@@ -79,9 +80,7 @@ namespace Delbert.Actors
         {
             return directory.GetFiles().ToImmutableArray();
         }
-
-        #endregion
-
+        
         #region Messages
 
         internal class GetPagesForSection

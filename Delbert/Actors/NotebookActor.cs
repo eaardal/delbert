@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Akka.Actor;
+using Akka.Actor.Dsl;
+using Delbert.Actors.Facades.Abstract;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Logging.Contracts;
 using Delbert.Model;
@@ -12,8 +14,16 @@ namespace Delbert.Actors
 {
     internal class NotebookActor : LoggingReceiveActor
     {
-        public NotebookActor(ILogger logger) : base(logger)
+        private readonly ISectionFacade _section;
+        private readonly IRootDirectoryFacade _rootDirectory;
+
+        public NotebookActor(ISectionFacade section, IRootDirectoryFacade rootDirectory, ILogger logger) : base(logger)
         {
+            if (section == null) throw new ArgumentNullException(nameof(section));
+            if (rootDirectory == null) throw new ArgumentNullException(nameof(rootDirectory));
+            _section = section;
+            _rootDirectory = rootDirectory;
+
             Receive<CreateNotebook>(msg => OnCreateNotebook(msg));
             Receive<GetNotebooks>(async msg => await OnGetNotebooks(msg));
         }
@@ -52,25 +62,17 @@ namespace Delbert.Actors
 
         private async Task<ImmutableArray<NotebookDto>> SetNotebookSections(ImmutableArray<NotebookDto> notebooks)
         {
-            var notebookSectionActor = Context.ActorOf(ActorRegistry.Section);
+            var sectionActor = Context.ActorOf(ActorRegistry.Section);
 
             return await Task.Run(() =>
             {
                 notebooks.ForEach(async notebook =>
                 {
-                    var query =
-                        await
-                            notebookSectionActor.Query(
-                                new SectionActor.GetSectionsForNotebook(notebook));
+                    var sections = await _section.GetSectionsForNotebook(sectionActor, notebook);
 
-                    query
-                        .WhenResultIs<SectionActor.GetSectionsForNotebookResult>(result =>
-                        {
-                            notebook.AddSections(result.Sections);
-                        })
-                        .LogFailure();
+                    notebook.AddSections(sections);
                 });
-
+                
                 return notebooks;
             });
         }
@@ -99,21 +101,9 @@ namespace Delbert.Actors
 
         private async Task<DirectoryInfo> GetCurrentRootDirectory()
         {
-            var rootDirectoryActor = Context.ActorSelection(ActorRegistry.RootDirectory);
+            var rootDirectoryActorSelection = Context.ActorSelection(ActorRegistry.RootDirectory);
 
-            var answer = await rootDirectoryActor.Ask(new RootDirectoryActor.GetRootDirectory());
-
-            if (answer is RootDirectoryActor.GetRootDirectoryResult)
-            {
-                return (answer as RootDirectoryActor.GetRootDirectoryResult).CurrentRootDirectory;
-            }
-
-            if (answer is Failure)
-            {
-                var failure = answer as Failure;
-                Log.Msg(this, l => l.Error(failure.Exception));
-            }
-            return null;
+            return await _rootDirectory.GetRootDirectory(rootDirectoryActorSelection);
         }
 
         #region Messages

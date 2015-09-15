@@ -106,6 +106,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Actors\CommandLineArgsParserActor.cs" />
+    <Compile Include="Actors\Facades\Abstract\ICommandLineArgsParserFacade.cs" />
+    <Compile Include="Actors\Facades\Abstract\INotebookFacade.cs" />
+    <Compile Include="Actors\Facades\Abstract\IPageFacade.cs" />
+    <Compile Include="Actors\Facades\Abstract\IRootDirectoryFacade.cs" />
+    <Compile Include="Actors\Facades\Abstract\ISectionFacade.cs" />
+    <Compile Include="Actors\Facades\CommandLineArgsParserFacade.cs" />
+    <Compile Include="Actors\Facades\NotebookFacade.cs" />
+    <Compile Include="Actors\Facades\PageFacade.cs" />
+    <Compile Include="Actors\Facades\RootDirectoryFacade.cs" />
+    <Compile Include="Actors\Facades\SectionFacade.cs" />
     <Compile Include="Actors\SectionActor.cs" />
     <Compile Include="Actors\PageActor.cs" />
     <Compile Include="Components\Editor\EditorView.xaml.cs">
@@ -144,6 +154,7 @@
     <Compile Include="Infrastructure\Abstract\IScreenViewModel.cs" />
     <Compile Include="Infrastructure\Abstract\IViewModelBase.cs" />
     <Compile Include="Infrastructure\Abstract\ScreenViewModel.cs" />
+    <Compile Include="Infrastructure\ActorFacade.cs" />
     <Compile Include="Infrastructure\ActorMetadata.cs" />
     <Compile Include="Infrastructure\ActorEntryExtensions.cs" />
     <Compile Include="Infrastructure\ActorRefExtensions.cs" />

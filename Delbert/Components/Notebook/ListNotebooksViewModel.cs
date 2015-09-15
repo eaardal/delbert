@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Interop;
 using Akka.Actor;
 using Delbert.Actors;
+using Delbert.Actors.Facades.Abstract;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Abstract;
 using Delbert.Messages;
@@ -15,13 +16,13 @@ namespace Delbert.Components.Notebook
 {
     sealed class ListNotebooksViewModel : ScreenViewModel, IListNotebooksViewModel
     {
-        private readonly IActorSystemAdapter _actorSystem;
-
-        public ListNotebooksViewModel(IIoC ioc, IActorSystemAdapter actorSystem) : base(ioc)
+        private readonly INotebookFacade _notebook;
+        
+        public ListNotebooksViewModel(INotebookFacade notebook, IIoC ioc) : base(ioc)
         {
-            if (actorSystem == null) throw new ArgumentNullException(nameof(actorSystem));
-            _actorSystem = actorSystem;
-
+            if (notebook == null) throw new ArgumentNullException(nameof(notebook));
+            _notebook = notebook;
+            
             Notebooks = new ItemChangeAwareObservableCollection<NotebookDto>();
 
             MessageBus.Subscribe<RootDirectoryChanged>(async msg => await OnNewRootDirectory(msg));
@@ -29,31 +30,27 @@ namespace Delbert.Components.Notebook
 
         public ItemChangeAwareObservableCollection<NotebookDto> Notebooks { get; set; }
 
+        protected override async void OnActivate()
+        {
+            await GetNotebooks();
+
+            base.OnActivate();
+        }
+
         private async Task OnNewRootDirectory(RootDirectoryChanged message)
         {
-            try
+            await GetNotebooks();
+        }
+
+        private async Task GetNotebooks()
+        {
+            var notebooks = await _notebook.GetNotebooks();
+
+            await DoOnUiDispatcherAsync(() =>
             {
-                var notebookActor = _actorSystem.ActorOf(ActorRegistry.Notebook);
-
-                var query = await notebookActor.Query(new NotebookActor.GetNotebooks());
-
-                query
-                    .WhenResultIs<NotebookActor.GetNotebooksResult>(async result =>
-                    {
-                        await DoOnUiDispatcherAsync(() =>
-                        {
-                            Notebooks.Clear();
-                            result.Notebooks.ForEach(n => Notebooks.Add(n));
-                        });
-                    })
-                    .LogFailure();
-
-
-            }
-            catch (Exception ex)
-            {
-                Log.Msg(this, l => l.Error(ex));
-            }
+                Notebooks.Clear();
+                notebooks.ForEach(n => Notebooks.Add(n));
+            });
         }
 
         public void NotebookSelected(NotebookDto notebook)

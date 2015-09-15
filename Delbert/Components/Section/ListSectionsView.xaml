@@ -16,7 +16,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <ItemsControl Grid.Row="0" ItemsSource="{Binding Path=Sections}" Margin="5">
+        <ItemsControl Grid.Row="0" ItemsSource="{Binding Path=Sections}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"></StackPanel>

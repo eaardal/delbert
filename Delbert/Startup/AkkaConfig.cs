@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Akka.Actor;
 using Akka.Configuration;
@@ -42,7 +43,7 @@ namespace Delbert.Startup
 
         /// <summary>
         /// Resolves all singleton actors so that the instance has been created and does not throw exception when trying to retrieve it using ActorSelection later on.
-        /// This will also trigger the actor's message subscriptions.
+        /// This will also trigger the actor's message subscriptions (in constructors) and do standard actor startup such as PreStart().
         /// </summary>
         /// <param name="actorSystem">The ActorSystem</param>
         private static void ResolveSingletonActors(IActorSystemAdapter actorSystem)

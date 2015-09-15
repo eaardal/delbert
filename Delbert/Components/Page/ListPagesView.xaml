@@ -16,7 +16,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <ItemsControl Grid.Row="0" ItemsSource="{Binding Path=Pages}" Margin="5">
+        <ItemsControl Grid.Row="0" ItemsSource="{Binding Path=Pages}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border Padding="3" CornerRadius="0,5,5,0" Background="{Binding Path=IsSelected, Converter={StaticResource IsPageSelectedToBackgroundConverter}}" Margin="0,3,0,0">

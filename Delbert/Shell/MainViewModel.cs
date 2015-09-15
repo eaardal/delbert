@@ -59,6 +59,7 @@ namespace Delbert.Shell
 
             SelectRootDirectory.Activate();
             AddNotebook.Activate();
+            ListNotebooks.Activate();
 
             MessageBus.Subscribe<RootDirectoryChanged>(OnNewRootDirectory);
         }
