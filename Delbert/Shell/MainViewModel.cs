@@ -24,6 +24,7 @@ namespace Delbert.Shell
         private IScreen _editor;
         private IScreen _addNotebook;
         private IScreen _addSection;
+        private bool _isRootDirectorySelected;
 
         public MainViewModel(IIoC ioc, 
             ISelectRootDirectoryViewModel selectRootDirectoryViewModel,
@@ -74,7 +75,18 @@ namespace Delbert.Shell
         
         private void OnNewRootDirectory(RootDirectoryChanged message)
         {
-            //TODO: Hide root dir textbox?
+            IsRootDirectorySelected = message.RootDirectory != null && message.RootDirectory.Exists;
+        }
+
+        public bool IsRootDirectorySelected
+        {
+            get { return _isRootDirectorySelected; }
+            set
+            {
+                if (value == _isRootDirectorySelected) return;
+                _isRootDirectorySelected = value;
+                NotifyOfPropertyChange(() => IsRootDirectorySelected);
+            }
         }
 
         public IScreen AddSection

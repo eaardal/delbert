@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Delbert.Actors;
+using Delbert.Actors.Facades.Abstract;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Abstract;
 using Delbert.Messages;
@@ -13,12 +14,12 @@ namespace Delbert.Components.Section
 {
     class ListSectionsViewModel : ScreenViewModel, IListSectionsViewModel
     {
-        private readonly IActorSystemAdapter _actorSystem;
+        private readonly INotebookFacade _notebook;
 
-        public ListSectionsViewModel(IIoC ioc, IActorSystemAdapter actorSystem) : base(ioc)
+        public ListSectionsViewModel(INotebookFacade notebook, IIoC ioc) : base(ioc)
         {
-            if (actorSystem == null) throw new ArgumentNullException(nameof(actorSystem));
-            _actorSystem = actorSystem;
+            if (notebook == null) throw new ArgumentNullException(nameof(notebook));
+            _notebook = notebook;
 
             Sections = new ItemChangeAwareObservableCollection<SectionDto>();
 
@@ -28,10 +29,12 @@ namespace Delbert.Components.Section
 
         private async Task OnSectionCreated(SectionCreated msg)
         {
-            await DoOnUiDispatcherAsync(async () =>
-            {
-                await GetSections(msg.NewSectionParentNotebook);
-            });
+            var notebooks = await _notebook.GetNotebooks();
+
+            var updatedParentNotebook =
+                notebooks.SingleOrDefault(n => n.Directory.FullName == msg.NewSectionParentNotebook.Directory.FullName);
+
+            await GetSections(updatedParentNotebook);
         }
 
         public ItemChangeAwareObservableCollection<SectionDto> Sections { get; }

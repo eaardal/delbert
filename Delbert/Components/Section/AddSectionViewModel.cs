@@ -99,6 +99,12 @@ namespace Delbert.Components.Section
 
                 MessageBus.Publish(new SectionCreated(_selectedNotebook));
             }
+
+            if (keyArgs?.Key == Key.Escape)
+            {
+                ShowReadOnly();
+                NewSectionName = null;
+            }
         }
 
         private void CreateSection()

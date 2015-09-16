@@ -14,11 +14,14 @@ namespace Delbert.Actors
     public class SectionActor : LoggingReceiveActor
     {
         private readonly IPageFacade _page;
+        private readonly INotebookFacade _notebook;
 
-        public SectionActor(IPageFacade page, ILogger log) : base(log)
+        public SectionActor(IPageFacade page, INotebookFacade notebook, ILogger log) : base(log)
         {
             if (page == null) throw new ArgumentNullException(nameof(page));
+            if (notebook == null) throw new ArgumentNullException(nameof(notebook));
             _page = page;
+            _notebook = notebook;
 
             Receive<GetSectionsForNotebook>(async msg => await OnGetSectionsForNotebook(msg));
             Receive<CreateNewSection>(msg => OnCreateNewSection(msg));

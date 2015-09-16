@@ -9,6 +9,11 @@ namespace Delbert.Model
     {
         private bool _isSelected;
 
+        public SectionDto()
+        {
+            Pages = ImmutableArray<PageDto>.Empty;
+        }
+
         public string Name { get; set; }
         public DirectoryInfo Directory { get; set; }
         public NotebookDto ParentNotebook { get; set; }

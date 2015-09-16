@@ -4,8 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Delbert.Shell"
+             xmlns:converters="clr-namespace:Delbert.Infrastructure.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:IsRootDirectorySelectedToVisibilityConverter x:Key="RootDirectorySelectedToVisibilityConverter"></converters:IsRootDirectorySelectedToVisibilityConverter>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -22,16 +26,16 @@
                 <ColumnDefinition Width="0.70*"></ColumnDefinition>
                 <ColumnDefinition Width="0.15*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }">
                 <ContentControl x:Name="ListSections"></ContentControl>
                 <ContentControl x:Name="AddSection"></ContentControl>
             </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="0" >
+            <StackPanel Grid.Row="1" Grid.Column="0" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }">
                 <ContentControl x:Name="ListNotebooks"></ContentControl>
                 <ContentControl x:Name="AddNotebook"></ContentControl>
             </StackPanel>
-            <ContentControl Grid.Row="1" Grid.Column="1" x:Name="Editor"></ContentControl>
-            <ContentControl Grid.Row="1" Grid.Column="2" x:Name="ListPages"></ContentControl>
+            <ContentControl Grid.Row="1" Grid.Column="1" x:Name="Editor" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }"></ContentControl>
+            <ContentControl Grid.Row="1" Grid.Column="2" x:Name="ListPages" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }">></ContentControl>
         </Grid>
     </Grid>
 </UserControl>

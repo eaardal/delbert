@@ -92,6 +92,13 @@ namespace Delbert.Components.Notebook
 
                 MessageBus.Publish(new NotebookCreated());
             }
+
+            if (keyArgs?.Key == Key.Escape)
+            {
+                ShowReadOnly();
+
+                NewNotebookName = null;
+            }
         }
 
         private async Task CreateNotebook()

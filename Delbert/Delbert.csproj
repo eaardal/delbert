@@ -175,6 +175,7 @@
     <Compile Include="Infrastructure\ByteArrayExtensions.cs" />
     <Compile Include="Infrastructure\Converters\IsNotebookSelectedToBackgroundConverter.cs" />
     <Compile Include="Infrastructure\Converters\IsPageSelectedToBackgroundConverter.cs" />
+    <Compile Include="Infrastructure\Converters\IsRootDirectorySelectedToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\IsSectionSelectedToBackgroundConverter.cs" />
     <Compile Include="Infrastructure\EnvironmentAdapter.cs" />
     <Compile Include="Infrastructure\Exceptions\UnexpectedActorAnswer.cs" />

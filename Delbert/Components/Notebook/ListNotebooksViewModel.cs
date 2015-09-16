@@ -27,6 +27,12 @@ namespace Delbert.Components.Notebook
 
             MessageBus.Subscribe<RootDirectoryChanged>(async msg => await OnNewRootDirectory(msg));
             MessageBus.Subscribe<NotebookCreated>(async msg => await OnNotebookCreated(msg));
+            MessageBus.Subscribe<SectionCreated>(async msg => await OnSectionCreated(msg));
+        }
+
+        private async Task OnSectionCreated(SectionCreated msg)
+        {
+            await GetNotebooks();
         }
 
         private async Task OnNotebookCreated(NotebookCreated msg)
