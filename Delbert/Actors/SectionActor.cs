@@ -69,15 +69,15 @@ namespace Delbert.Actors
         private async Task<ImmutableArray<SectionDto>> SetPagesForSections(ImmutableArray<SectionDto> sections)
         {
             var pageActor = Context.ActorOf(ActorRegistry.Page);
-
-            return await Task.Run(() =>
+            
+            return await Task.Run(async () =>
             {
-                sections.ForEach(async section =>
+                foreach (var section in sections)
                 {
                     var pages = await _page.GetPagesForSection(pageActor, section);
 
                     section.AddPages(pages);
-                });
+                }
 
                 return sections;
             });

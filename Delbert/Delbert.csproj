@@ -173,6 +173,8 @@
     <Compile Include="Infrastructure\AutofacExtensions.cs" />
     <Compile Include="Infrastructure\BrushHelper.cs" />
     <Compile Include="Infrastructure\ByteArrayExtensions.cs" />
+    <Compile Include="Infrastructure\Converters\IsAnyNotebookSelectedToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Converters\IsAnyPageSelectedToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\IsNotebookSelectedToBackgroundConverter.cs" />
     <Compile Include="Infrastructure\Converters\IsPageSelectedToBackgroundConverter.cs" />
     <Compile Include="Infrastructure\Converters\IsRootDirectorySelectedToVisibilityConverter.cs" />
@@ -183,6 +185,7 @@
     <Compile Include="Infrastructure\IActorSystemAdapter.cs" />
     <Compile Include="Infrastructure\LoggingReceiveActor.cs" />
     <Compile Include="Infrastructure\ProcessAdapter.cs" />
+    <Compile Include="Infrastructure\TaskExtensions.cs" />
     <Compile Include="Messages\NotebookCreated.cs" />
     <Compile Include="Messages\RootDirectoryChanged.cs" />
     <Compile Include="Messages\SectionCreated.cs" />

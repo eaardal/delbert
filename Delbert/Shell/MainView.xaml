@@ -9,6 +9,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <converters:IsRootDirectorySelectedToVisibilityConverter x:Key="RootDirectorySelectedToVisibilityConverter"></converters:IsRootDirectorySelectedToVisibilityConverter>
+        <converters:IsAnyNotebookSelectedToVisibilityConverter x:Key="AnyNotebookSelectedToVisibilityConverter"></converters:IsAnyNotebookSelectedToVisibilityConverter>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -28,7 +29,7 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }">
                 <ContentControl x:Name="ListSections"></ContentControl>
-                <ContentControl x:Name="AddSection"></ContentControl>
+                <ContentControl x:Name="AddSection" Visibility="{Binding Path=IsAnyNotebookSelected, Converter={StaticResource AnyNotebookSelectedToVisibilityConverter} }"></ContentControl>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="0" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }">
                 <ContentControl x:Name="ListNotebooks"></ContentControl>

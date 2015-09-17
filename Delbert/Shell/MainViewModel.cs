@@ -25,6 +25,7 @@ namespace Delbert.Shell
         private IScreen _addNotebook;
         private IScreen _addSection;
         private bool _isRootDirectorySelected;
+        private bool _isAnyNotebookSelected;
 
         public MainViewModel(IIoC ioc, 
             ISelectRootDirectoryViewModel selectRootDirectoryViewModel,
@@ -71,11 +72,28 @@ namespace Delbert.Shell
             AddSection.Activate();
 
             MessageBus.Subscribe<RootDirectoryChanged>(OnNewRootDirectory);
+            MessageBus.Subscribe<NotebookSelected>(OnNotebookSelected);
         }
-        
+
+        private void OnNotebookSelected(NotebookSelected message)
+        {
+            IsAnyNotebookSelected = true;
+        }
+
         private void OnNewRootDirectory(RootDirectoryChanged message)
         {
             IsRootDirectorySelected = message.RootDirectory != null && message.RootDirectory.Exists;
+        }
+
+        public bool IsAnyNotebookSelected
+        {
+            get { return _isAnyNotebookSelected; }
+            set
+            {
+                if (value == _isAnyNotebookSelected) return;
+                _isAnyNotebookSelected = value;
+                NotifyOfPropertyChange(() => IsAnyNotebookSelected);
+            }
         }
 
         public bool IsRootDirectorySelected

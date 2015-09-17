@@ -15,6 +15,7 @@ namespace Delbert.Components.Editor
         private readonly IProcessFacade _process;
         private string _text;
         private PageDto _page;
+        private bool _isAnyPageSelected;
 
         public EditorViewModel(IProcessFacade process, IIoC ioc) : base(ioc)
         {
@@ -30,11 +31,23 @@ namespace Delbert.Components.Editor
                 {
                     Page = message.Page;
                     Text = Page.Text;
+                    IsAnyPageSelected = true;
                 });
             }
             catch (Exception ex)
             {
                 Log.Msg(this, l => l.Error(ex));
+            }
+        }
+
+        public bool IsAnyPageSelected
+        {
+            get { return _isAnyPageSelected; }
+            set
+            {
+                if (value == _isAnyPageSelected) return;
+                _isAnyPageSelected = value;
+                NotifyOfPropertyChange(() => IsAnyPageSelected);
             }
         }
 

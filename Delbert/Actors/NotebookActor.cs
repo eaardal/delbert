@@ -21,26 +21,39 @@ namespace Delbert.Actors
         {
             if (section == null) throw new ArgumentNullException(nameof(section));
             if (rootDirectory == null) throw new ArgumentNullException(nameof(rootDirectory));
+
             _section = section;
             _rootDirectory = rootDirectory;
 
             Receive<CreateNotebook>(msg => OnCreateNotebook(msg));
-            Receive<GetNotebooks>(async msg => await OnGetNotebooks(msg));
+            Receive<GetNotebooks>(msg => OnGetNotebooks(msg));
+            Receive<GotCurrentRootDirectoryResult>(msg => OnGotCurrentRootDirectoryResult(msg));
+            Receive<SectionsHasBeenSetOnNotebooks>(msg => OnSectionsHasBeenSetOnNotebooks(msg));
+        }
+
+        private void OnSectionsHasBeenSetOnNotebooks(SectionsHasBeenSetOnNotebooks msg)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnGotCurrentRootDirectoryResult(GotCurrentRootDirectoryResult message)
+        {
+            var rootDirectory = message.RootDirectory;
+
+            var notebooks = GetNotebooksUnderDirectory(rootDirectory);
+
+            var sections = SetNotebookSections(notebooks);
+
+            Sender.Tell(new GetNotebooksResult(sections), Self);
         }
 
         #region Message Handlers
 
-        private async Task OnGetNotebooks(GetNotebooks message)
+        private void OnGetNotebooks(GetNotebooks message)
         {
             try
             {
-                var rootDirectory = await GetCurrentRootDirectory();
-
-                var notebooks = GetNotebooksUnderDirectory(rootDirectory);
-
-                var notebooksWithSections = await SetNotebookSections(notebooks);
-
-                Sender.Tell(new GetNotebooksResult(notebooksWithSections), Self);
+                GetCurrentRootDirectory();
             }
             catch (Exception ex)
             {
@@ -60,20 +73,19 @@ namespace Delbert.Actors
 
         #endregion
 
-        private async Task<ImmutableArray<NotebookDto>> SetNotebookSections(ImmutableArray<NotebookDto> notebooks)
+        private void SetNotebookSections(ImmutableArray<NotebookDto> notebooks)
         {
             var sectionActor = Context.ActorOf(ActorRegistry.Section);
 
-            return await Task.Run(() =>
+            notebooks.ForEach(notebook =>
             {
-                notebooks.ForEach(async notebook =>
+                _section.GetSectionsForNotebook(sectionActor, notebook).ContinueWith(sectionsTask =>
                 {
-                    var sections = await _section.GetSectionsForNotebook(sectionActor, notebook);
+                    var sections = sectionsTask.Result;
 
                     notebook.AddSections(sections);
-                });
-                
-                return notebooks;
+
+                }).PipeTo(Self);
             });
         }
 
@@ -99,14 +111,18 @@ namespace Delbert.Actors
             return directoryInfo.Name;
         }
 
-        private async Task<DirectoryInfo> GetCurrentRootDirectory()
+        private void GetCurrentRootDirectory()
         {
             var rootDirectoryActorSelection = Context.ActorSelection(ActorRegistry.RootDirectory);
 
-            return await _rootDirectory.GetRootDirectory(rootDirectoryActorSelection);
+            _rootDirectory.GetRootDirectory(rootDirectoryActorSelection).PipeTo(Self);
         }
 
         #region Messages
+
+        internal class SectionsHasBeenSetOnNotebooks
+        {
+        }
 
         internal class CreateNotebook
         {
@@ -130,6 +146,16 @@ namespace Delbert.Actors
                 if (notebooks == null) throw new ArgumentNullException(nameof(notebooks));
                 Notebooks = notebooks;
             }
+        }
+
+        internal class GotCurrentRootDirectoryResult
+        {
+            public GotCurrentRootDirectoryResult(DirectoryInfo rootDirectory)
+            {
+                RootDirectory = rootDirectory;
+            }
+
+            public DirectoryInfo RootDirectory { get; }
         }
 
         #endregion

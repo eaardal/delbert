@@ -32,7 +32,33 @@ namespace Delbert.Components.Notebook
 
         private async Task OnSectionCreated(SectionCreated msg)
         {
-            await GetNotebooks();
+            var notebooks = await _notebook.GetNotebooks();
+
+            var selectedNotebook = Notebooks.Single(n => n.IsSelected);
+
+            await DoOnUiDispatcherAsync(() =>
+            {
+                Notebooks.Clear();
+                notebooks.ForEach(n =>
+                {
+                    if (n.Id == selectedNotebook.Id)
+                    {
+                        n.Select();
+                    }
+                    Notebooks.Add(n);
+                });
+
+                //foreach (var notebook in notebooks)
+                //{
+                //    foreach (var existingNotebook in Notebooks)
+                //    {
+                //        if (notebook.Id == existingNotebook.Id)
+                //        {
+                //            existingNotebook.Sections = notebook.Sections;
+                //        }
+                //    }
+                //}
+            });
         }
 
         private async Task OnNotebookCreated(NotebookCreated msg)

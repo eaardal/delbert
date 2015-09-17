@@ -14,8 +14,12 @@ namespace Delbert.Model
             Sections = ImmutableArray<SectionDto>.Empty;
         }
 
+        public string Id => Directory?.FullName ?? Name;
+
         public string Name { get; set; }
+
         public DirectoryInfo Directory { get; set; }
+
         public ImmutableArray<SectionDto> Sections { get; set; }
 
         public bool IsSelected
