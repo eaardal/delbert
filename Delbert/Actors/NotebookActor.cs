@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -26,34 +27,44 @@ namespace Delbert.Actors
             _rootDirectory = rootDirectory;
 
             Receive<CreateNotebook>(msg => OnCreateNotebook(msg));
-            Receive<GetNotebooks>(msg => OnGetNotebooks(msg));
-            Receive<GotCurrentRootDirectoryResult>(msg => OnGotCurrentRootDirectoryResult(msg));
-            Receive<SectionsHasBeenSetOnNotebooks>(msg => OnSectionsHasBeenSetOnNotebooks(msg));
+            Receive<GetNotebooks>(msg =>
+            {
+                var originalSender = Sender;
+                OnGetNotebooks(msg, originalSender);
+            });
+
+            Receive<Internal.GotCurrentRootDirectoryResult>(msg => OnGotCurrentRootDirectoryResult(msg));
+            Receive<Internal.SetNotebookSectionsResult>(msg => OnSectionsHasBeenSetOnNotebooks(msg));
         }
 
-        private void OnSectionsHasBeenSetOnNotebooks(SectionsHasBeenSetOnNotebooks msg)
+        private void OnSectionsHasBeenSetOnNotebooks(Internal.SetNotebookSectionsResult message)
         {
-            throw new NotImplementedException();
+            var originalSender = message.OriginalSender;
+            originalSender.Tell(new GetNotebooksResult(message.Notebooks), Self);
         }
 
-        private void OnGotCurrentRootDirectoryResult(GotCurrentRootDirectoryResult message)
+        private void OnGotCurrentRootDirectoryResult(Internal.GotCurrentRootDirectoryResult message)
         {
             var rootDirectory = message.RootDirectory;
 
             var notebooks = GetNotebooksUnderDirectory(rootDirectory);
 
-            var sections = SetNotebookSections(notebooks);
-
-            Sender.Tell(new GetNotebooksResult(sections), Self);
+            SetNotebookSections(notebooks, message.OriginalSender);
         }
-
-        #region Message Handlers
-
-        private void OnGetNotebooks(GetNotebooks message)
+        
+        private void OnGetNotebooks(GetNotebooks message, IActorRef originalSender)
         {
             try
             {
-                GetCurrentRootDirectory();
+                var rootDirectoryActorSelection = Context.ActorSelection(ActorRegistry.RootDirectory);
+
+                _rootDirectory.GetRootDirectory(rootDirectoryActorSelection).ContinueWith(rootDirectoryTask =>
+                {
+                    var rootDirectory = rootDirectoryTask.Result;
+
+                    return new Internal.GotCurrentRootDirectoryResult(rootDirectory, originalSender);
+
+                }).PipeTo(Self);
             }
             catch (Exception ex)
             {
@@ -70,23 +81,33 @@ namespace Delbert.Actors
                 directory.Create();
             }
         }
-
-        #endregion
-
-        private void SetNotebookSections(ImmutableArray<NotebookDto> notebooks)
+        
+        private void SetNotebookSections(ImmutableArray<NotebookDto> notebooks, IActorRef originalSender)
         {
             var sectionActor = Context.ActorOf(ActorRegistry.Section);
 
+            var getSectionsForNotebookTasks = new List<Task<NotebookDto>>();
+
             notebooks.ForEach(notebook =>
             {
-                _section.GetSectionsForNotebook(sectionActor, notebook).ContinueWith(sectionsTask =>
+                var task = _section.GetSectionsForNotebook(sectionActor, notebook).ContinueWith(sectionsTask =>
                 {
                     var sections = sectionsTask.Result;
 
                     notebook.AddSections(sections);
 
-                }).PipeTo(Self);
+                    return notebook;
+                });
+
+                getSectionsForNotebookTasks.Add(task);
             });
+
+            Task.WhenAll(getSectionsForNotebookTasks).ContinueWith(notebooksWithSectionsTask =>
+            {
+                var notebooksWithSections = notebooksWithSectionsTask.Result.ToImmutableArray();
+                return new Internal.SetNotebookSectionsResult(notebooksWithSections, originalSender);
+
+            }).PipeTo(Self);
         }
 
         private ImmutableArray<NotebookDto> GetNotebooksUnderDirectory(DirectoryInfo directory)
@@ -110,21 +131,38 @@ namespace Delbert.Actors
         {
             return directoryInfo.Name;
         }
-
-        private void GetCurrentRootDirectory()
-        {
-            var rootDirectoryActorSelection = Context.ActorSelection(ActorRegistry.RootDirectory);
-
-            _rootDirectory.GetRootDirectory(rootDirectoryActorSelection).PipeTo(Self);
-        }
-
+        
         #region Messages
 
-        internal class SectionsHasBeenSetOnNotebooks
+        private class Internal
         {
+            internal class GotCurrentRootDirectoryResult
+            {
+                public GotCurrentRootDirectoryResult(DirectoryInfo rootDirectory, IActorRef originalSender)
+                {
+                    RootDirectory = rootDirectory;
+                    OriginalSender = originalSender;
+                }
+
+                public DirectoryInfo RootDirectory { get; }
+                public IActorRef OriginalSender { get; }
+            }
+
+
+            internal class SetNotebookSectionsResult
+            {
+                public SetNotebookSectionsResult(ImmutableArray<NotebookDto> notebooks, IActorRef originalSender)
+                {
+                    Notebooks = notebooks;
+                    OriginalSender = originalSender;
+                }
+
+                public ImmutableArray<NotebookDto> Notebooks { get; }
+                public IActorRef OriginalSender { get; }
+            }
         }
 
-        internal class CreateNotebook
+        public class CreateNotebook
         {
             public DirectoryInfo Directory { get; }
 
@@ -147,17 +185,7 @@ namespace Delbert.Actors
                 Notebooks = notebooks;
             }
         }
-
-        internal class GotCurrentRootDirectoryResult
-        {
-            public GotCurrentRootDirectoryResult(DirectoryInfo rootDirectory)
-            {
-                RootDirectory = rootDirectory;
-            }
-
-            public DirectoryInfo RootDirectory { get; }
-        }
-
+        
         #endregion
     }
 }

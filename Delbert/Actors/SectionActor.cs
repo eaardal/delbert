@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -14,20 +15,48 @@ namespace Delbert.Actors
     public class SectionActor : LoggingReceiveActor
     {
         private readonly IPageFacade _page;
-        private readonly INotebookFacade _notebook;
 
-        public SectionActor(IPageFacade page, INotebookFacade notebook, ILogger log) : base(log)
+        public SectionActor(IPageFacade page, ILogger log) : base(log)
         {
             if (page == null) throw new ArgumentNullException(nameof(page));
-            if (notebook == null) throw new ArgumentNullException(nameof(notebook));
             _page = page;
-            _notebook = notebook;
 
-            Receive<GetSectionsForNotebook>(async msg => await OnGetSectionsForNotebook(msg));
+            Receive<GetSectionsForNotebook>(msg =>
+            {
+                var originalSender = Sender;
+                OnGetSectionsForNotebook(msg, originalSender);
+            });
             Receive<CreateNewSection>(msg => OnCreateNewSection(msg));
+            Receive<Internal.SetPagesForSectionsResult>(msg => OnSetPagesForSectionsResult(msg));
         }
 
-        #region Message Handlers
+        private void OnSetPagesForSectionsResult(Internal.SetPagesForSectionsResult message)
+        {
+            var sections = message.Sections;
+            var originalSender = message.OriginalSender;
+
+            originalSender.Tell(new GetSectionsForNotebookResult(sections));
+        }
+        
+        private void OnGetSectionsForNotebook(GetSectionsForNotebook message, IActorRef originalSender)
+        {
+            try
+            {
+                var notebook = message.Notebook;
+
+                var subDirectories = notebook.Directory.GetDirectories();
+
+                var sections = CreateSectionsFromDirectories(subDirectories);
+
+                var sectionsWithNotebook = SetParentNotebook(notebook, sections);
+
+                SetPagesForSections(sectionsWithNotebook, originalSender);
+            }
+            catch (Exception ex)
+            {
+                Log.Msg(this, l => l.Error(ex));
+            }
+        }
 
         private void OnCreateNewSection(CreateNewSection msg)
         {
@@ -38,49 +67,33 @@ namespace Delbert.Actors
                 directory.Create();
             }
         }
-
-        private async Task OnGetSectionsForNotebook(GetSectionsForNotebook msg)
-        {
-            try
-            {
-                var sections = await GetSections(msg.Notebook);
-
-                Sender.Tell(new GetSectionsForNotebookResult(sections), Self);
-            }
-            catch (Exception ex)
-            {
-                Log.Msg(this, l => l.Error(ex));
-            }
-        }
-
-        #endregion
-
-        private async Task<ImmutableArray<SectionDto>> GetSections(NotebookDto notebook)
-        {
-            var subDirectories = notebook.Directory.GetDirectories();
-
-            var sections = CreateSectionsFromDirectories(subDirectories);
-
-            var sectionsWithNotebook = SetParentNotebook(notebook, sections);
-
-            return await SetPagesForSections(sectionsWithNotebook);
-        }
-
-        private async Task<ImmutableArray<SectionDto>> SetPagesForSections(ImmutableArray<SectionDto> sections)
+        
+        private void SetPagesForSections(ImmutableArray<SectionDto> sections, IActorRef originalSender)
         {
             var pageActor = Context.ActorOf(ActorRegistry.Page);
-            
-            return await Task.Run(async () =>
+
+            var getPagesForSectionTasks = new List<Task<SectionDto>>();
+
+            sections.ForEach(section =>
             {
-                foreach (var section in sections)
+                var task = _page.GetPagesForSection(pageActor, section).ContinueWith(pagesTask =>
                 {
-                    var pages = await _page.GetPagesForSection(pageActor, section);
+                    var pages = pagesTask.Result;
 
                     section.AddPages(pages);
-                }
 
-                return sections;
+                    return section;
+                });
+
+                getPagesForSectionTasks.Add(task);
             });
+
+            Task.WhenAll(getPagesForSectionTasks).ContinueWith(sectionsWithPagesTask =>
+            {
+                var sectionsWithPages = sectionsWithPagesTask.Result.ToImmutableArray();
+                return new Internal.SetPagesForSectionsResult(sectionsWithPages, originalSender);
+
+            }).PipeTo(Self);
         }
 
         private static ImmutableArray<SectionDto> SetParentNotebook(NotebookDto notebook, ImmutableArray<SectionDto> sections)
@@ -104,6 +117,21 @@ namespace Delbert.Actors
         }
 
         #region Messages
+
+        private class Internal
+        {
+            internal class SetPagesForSectionsResult
+            {
+                public SetPagesForSectionsResult(ImmutableArray<SectionDto> sections, IActorRef originalSender)
+                {
+                    Sections = sections;
+                    OriginalSender = originalSender;
+                }
+
+                public ImmutableArray<SectionDto> Sections { get; }
+                public IActorRef OriginalSender { get; }
+            }
+        }
 
         internal class GetSectionsForNotebook
         {

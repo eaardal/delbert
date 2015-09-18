@@ -16,9 +16,7 @@ namespace Delbert.Actors
         {
             Receive<GetPagesForSection>(msg => OnGetPagesForSection(msg));
         }
-
-        #region Message Handlers
-
+        
         private void OnGetPagesForSection(GetPagesForSection msg)
         {
             try
@@ -32,9 +30,7 @@ namespace Delbert.Actors
                 Log.Msg(this, l => l.Error(ex));
             }
         }
-
-        #endregion
-
+        
         private ImmutableArray<PageDto> GetPages(SectionDto section)
         {
             var files = GetFilesUnderDirectory(section.Directory);
