@@ -57,7 +57,7 @@ namespace Delbert.Actors
                 return false;
             }
 
-            var validArgs = new[] { "-rd", "-path" };
+            var validArgs = new[] { "-path" };
 
             var foundMatch = false;
             var validArgIndex = -1;

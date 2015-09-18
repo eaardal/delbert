@@ -10,5 +10,7 @@ namespace Delbert.Actors.Facades.Abstract
         void SetRootDirectory(ActorSelection actorSelection, DirectoryInfo directory);
         Task<DirectoryInfo> GetRootDirectory();
         Task<DirectoryInfo> GetRootDirectory(ActorSelection actorSelection);
+        void SetRootDirectoryFromCommandLineArgumentsIfExists();
+        void SetRootDirectoryFromCommandLineArgumentsIfExists(ActorSelection actorSelection);
     }
 }

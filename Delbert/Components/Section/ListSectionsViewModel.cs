@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Interop;
 using Delbert.Actors;
 using Delbert.Actors.Facades.Abstract;
 using Delbert.Infrastructure;
@@ -25,6 +26,29 @@ namespace Delbert.Components.Section
 
             MessageBus.Subscribe<NotebookSelected>(async msg => await OnNotebookSelected(msg));
             MessageBus.Subscribe<SectionCreated>(async msg => await OnSectionCreated(msg));
+            MessageBus.Subscribe<PageCreated>(async msg => await OnPageCreated(msg));
+        }
+
+        private async Task OnPageCreated(PageCreated msg)
+        {
+            var notebooks = await _notebook.GetNotebooks();
+
+            var selectedSection = Sections.Single(s => s.IsSelected);
+
+            var updatedParentNotebook = notebooks.Single(n => n.Id == selectedSection.ParentNotebook.Id);
+
+            await DoOnUiDispatcherAsync(() =>
+            {
+                Sections.Clear();
+                updatedParentNotebook.Sections.ForEach(s =>
+                {
+                    if (s.Id == selectedSection.Id)
+                    {
+                        s.Select();
+                    }
+                    Sections.Add(s);
+                });
+            });
         }
 
         private async Task OnSectionCreated(SectionCreated msg)

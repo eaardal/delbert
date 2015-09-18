@@ -14,6 +14,7 @@ namespace Delbert.Model
             Pages = ImmutableArray<PageDto>.Empty;
         }
 
+        public string Id => Directory.FullName;
         public string Name { get; set; }
         public DirectoryInfo Directory { get; set; }
         public NotebookDto ParentNotebook { get; set; }

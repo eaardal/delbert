@@ -20,7 +20,20 @@ namespace Delbert.Components.Editor
         public EditorViewModel(IProcessFacade process, IIoC ioc) : base(ioc)
         {
             _process = process;
+
             MessageBus.Subscribe<PageSelected>(async msg => await OnPageSelected(msg));
+            MessageBus.Subscribe<NotebookSelected>(OnNotebookSelected);
+            MessageBus.Subscribe<SectionSelected>(OnSectionSelected);
+        }
+
+        private void OnSectionSelected(SectionSelected obj)
+        {
+            IsAnyPageSelected = false;
+        }
+
+        private void OnNotebookSelected(NotebookSelected obj)
+        {
+            IsAnyPageSelected = false;
         }
 
         private async Task OnPageSelected(PageSelected message)

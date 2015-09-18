@@ -16,35 +16,43 @@ namespace Delbert.Actors
         private readonly ICommandLineArgsParserFacade _commandLineArgsParser;
         private DirectoryInfo _rootDirectory;
 
-        public RootDirectoryActor(ICommandLineArgsParserFacade commandLineArgsParser, ILogger log, IMessageBus messageBus) : base(log)
+        public RootDirectoryActor(ICommandLineArgsParserFacade commandLineArgsParser, ILogger log, IMessageBus messageBus)
+            : base(log)
         {
             if (messageBus == null) throw new ArgumentNullException(nameof(messageBus));
             if (commandLineArgsParser == null) throw new ArgumentNullException(nameof(commandLineArgsParser));
+
             _messageBus = messageBus;
             _commandLineArgsParser = commandLineArgsParser;
 
             Receive<SetRootDirectory>(msg => OnSetRootDirectory(msg));
+            Receive<SetRootDirectoryFromCommandLineArgumentsIfExists>(msg => OnSetRootDirectoryFromCommandLineArgumentsIfExists(msg));
+            Receive<Internal.GetRootDirectoryFromCommandLineResult>(msg => OnGetRootDirectoryFromCommandLineResult(msg));
         }
 
-        protected override async void PreStart()
+        private void OnGetRootDirectoryFromCommandLineResult(Internal.GetRootDirectoryFromCommandLineResult message)
         {
-            await SetRootDirectoryFromCommandLineArgumentsIfExists();
+            var directory = message.RootDirectory;
 
-            base.PreStart();
+            if (directory != null)
+            {
+                SetRootDir(directory);
+            }
         }
-
-        private async Task SetRootDirectoryFromCommandLineArgumentsIfExists()
+        
+        private void OnSetRootDirectoryFromCommandLineArgumentsIfExists(SetRootDirectoryFromCommandLineArgumentsIfExists message)
         {
             try
             {
                 var commandLineArgsParserActor = Context.ActorOf(ActorRegistry.CommandLineArgsParser);
 
-                var directory = await _commandLineArgsParser.GetRootDirectoryFromCommandLine(commandLineArgsParserActor);
+                _commandLineArgsParser.GetRootDirectoryFromCommandLine(commandLineArgsParserActor)
+                    .ContinueWith(rootDirectoryTask =>
+                    {
+                        var directory = rootDirectoryTask.Result;
+                        return new Internal.GetRootDirectoryFromCommandLineResult(directory);
 
-                if (directory != null)
-                {
-                    SetRootDir(directory);
-                }
+                    }).PipeTo(Self);
             }
             catch (Exception ex)
             {
@@ -62,19 +70,15 @@ namespace Delbert.Actors
 
         #endregion
 
-        #region Message Handlers
-
         private void OnSetRootDirectory(SetRootDirectory msg)
         {
             SetRootDir(msg.RootDirectory);
         }
-        
+
         private void OnGetRootDirectory(GetRootDirectory msg)
         {
             Sender.Tell(new GetRootDirectoryResult(_rootDirectory), Self);
         }
-
-        #endregion
 
         private void SetRootDir(DirectoryInfo directory)
         {
@@ -86,6 +90,19 @@ namespace Delbert.Actors
         }
 
         #region Messages
+
+        private class Internal
+        {
+            internal class GetRootDirectoryFromCommandLineResult
+            {
+                public GetRootDirectoryFromCommandLineResult(DirectoryInfo rootDirectory)
+                {
+                    RootDirectory = rootDirectory;
+                }
+
+                public DirectoryInfo RootDirectory { get; }
+            }
+        }
 
         internal class SetRootDirectory
         {
@@ -114,7 +131,11 @@ namespace Delbert.Actors
 
         public class NoRootDirectorySet
         {
-            
+
+        }
+
+        internal class SetRootDirectoryFromCommandLineArgumentsIfExists
+        {
         }
 
         #endregion

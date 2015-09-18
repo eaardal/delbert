@@ -33,9 +33,7 @@ namespace Delbert.Startup
             var actorSystemAdapter = container.Resolve<IActorSystemAdapter>(new TypedParameter(typeof(ActorSystem), system));
             builder.RegisterInstance(actorSystemAdapter).AsImplementedInterfaces().SingleInstance();
             builder.RegisterInstance(system).AsSelf().SingleInstance();
-
-            //builder.RegisterActor<ServerConnector>(system, propsResolver, ActorRegistry.Client.ServerConnector);
-
+            
             builder.Update(container);
 
             ResolveSingletonActors(actorSystemAdapter);

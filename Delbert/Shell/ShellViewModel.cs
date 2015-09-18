@@ -14,11 +14,11 @@ namespace Delbert.Shell
             
             DisplayName = "Delbert";
 
-            ActivateItem(mainViewModel);
+            mainViewModel.Activate();
 
             CurrentScreen = mainViewModel;
         }
-
+        
         public IScreen CurrentScreen
         {
             get { return _currentScreen; }

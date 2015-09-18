@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Delbert.Infrastructure;
 using Delbert.Infrastructure.Logging.Contracts;
 using Delbert.Model;
@@ -15,8 +16,19 @@ namespace Delbert.Actors
         public PageActor(ILogger log) : base(log)
         {
             Receive<GetPagesForSection>(msg => OnGetPagesForSection(msg));
+            Receive<CreatePage>(msg => OnCreatePage(msg));
         }
-        
+
+        private void OnCreatePage(CreatePage msg)
+        {
+            var file = msg.PageFile;
+
+            if (!file.Exists)
+            {
+                file.Create();
+            }
+        }
+
         private void OnGetPagesForSection(GetPagesForSection msg)
         {
             try
@@ -76,8 +88,18 @@ namespace Delbert.Actors
         {
             return directory.GetFiles().ToImmutableArray();
         }
-        
+
         #region Messages
+
+        public class CreatePage
+        {
+            public FileInfo PageFile { get; }
+
+            public CreatePage(FileInfo pageFile)
+            {
+                PageFile = pageFile;
+            }
+        }
 
         internal class GetPagesForSection
         {

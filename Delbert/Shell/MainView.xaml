@@ -10,6 +10,7 @@
     <UserControl.Resources>
         <converters:IsRootDirectorySelectedToVisibilityConverter x:Key="RootDirectorySelectedToVisibilityConverter"></converters:IsRootDirectorySelectedToVisibilityConverter>
         <converters:IsAnyNotebookSelectedToVisibilityConverter x:Key="AnyNotebookSelectedToVisibilityConverter"></converters:IsAnyNotebookSelectedToVisibilityConverter>
+        <converters:IsAnySectionSelectedToVisibilityConverter x:Key="AnySectionSelectedToVisibilityConverter"></converters:IsAnySectionSelectedToVisibilityConverter>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -36,7 +37,10 @@
                 <ContentControl x:Name="AddNotebook"></ContentControl>
             </StackPanel>
             <ContentControl Grid.Row="1" Grid.Column="1" x:Name="Editor" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }"></ContentControl>
-            <ContentControl Grid.Row="1" Grid.Column="2" x:Name="ListPages" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }">></ContentControl>
+            <StackPanel Grid.Row="1" Grid.Column="2" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }">
+                <ContentControl x:Name="ListPages"></ContentControl>
+                <ContentControl x:Name="AddPage" Visibility="{Binding Path=IsAnySectionSelected, Converter={StaticResource AnySectionSelectedToVisibilityConverter} }"></ContentControl>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using Delbert.Actors;
+using Delbert.Actors.Facades.Abstract;
 using Delbert.Components;
 using Delbert.Components.Editor;
 using Delbert.Components.Notebook;
 using Delbert.Components.Page;
 using Delbert.Components.Section;
+using Delbert.Infrastructure;
 using Delbert.Infrastructure.Abstract;
 using Delbert.Messages;
 using Delbert.Shell.Abstract;
@@ -17,6 +20,7 @@ namespace Delbert.Shell
 {
     sealed class MainViewModel : ConductorViewModel, IMainViewModel
     {
+        private readonly IRootDirectoryFacade _rootDirectory;
         private IScreen _selectRootDirectory;
         private IScreen _listNotebooks;
         private IScreen _listSections;
@@ -26,6 +30,8 @@ namespace Delbert.Shell
         private IScreen _addSection;
         private bool _isRootDirectorySelected;
         private bool _isAnyNotebookSelected;
+        private IScreen _addPage;
+        private bool _isAnySectionSelected;
 
         public MainViewModel(IIoC ioc, 
             ISelectRootDirectoryViewModel selectRootDirectoryViewModel,
@@ -34,7 +40,9 @@ namespace Delbert.Shell
             IListPagesViewModel listPagesViewModel,
             IEditorViewModel editorViewModel,
             IAddNotebookViewModel addNotebookViewModel,
-            IAddSectionViewModel addSectionViewModel
+            IAddSectionViewModel addSectionViewModel,
+            IAddPageViewModel addPageViewModel,
+            IRootDirectoryFacade rootDirectory
             ) : base(ioc)
         {
             if (selectRootDirectoryViewModel == null)
@@ -58,6 +66,14 @@ namespace Delbert.Shell
             if (addSectionViewModel == null)
                 throw new ArgumentNullException(nameof(addSectionViewModel));
 
+            if (addPageViewModel == null)
+                throw new ArgumentNullException(nameof(addPageViewModel));
+
+            if (rootDirectory == null)
+                throw new ArgumentNullException(nameof(rootDirectory));
+
+            _rootDirectory = rootDirectory;
+
             SelectRootDirectory = selectRootDirectoryViewModel;
             ListNotebooks = listNotebooksViewModel;
             ListSections = listSectionsViewModel;
@@ -65,24 +81,49 @@ namespace Delbert.Shell
             Editor = editorViewModel;
             AddNotebook = addNotebookViewModel;
             AddSection = addSectionViewModel;
-
-            SelectRootDirectory.Activate();
-            AddNotebook.Activate();
-            ListNotebooks.Activate();
-            AddSection.Activate();
-
+            AddPage = addPageViewModel;
+              
             MessageBus.Subscribe<RootDirectoryChanged>(OnNewRootDirectory);
             MessageBus.Subscribe<NotebookSelected>(OnNotebookSelected);
+            MessageBus.Subscribe<SectionSelected>(OnSectionSelected);
+        }
+
+        private void OnSectionSelected(SectionSelected message)
+        {
+            IsAnySectionSelected = true;
         }
 
         private void OnNotebookSelected(NotebookSelected message)
         {
             IsAnyNotebookSelected = true;
+            IsAnySectionSelected = false;
         }
 
         private void OnNewRootDirectory(RootDirectoryChanged message)
         {
             IsRootDirectorySelected = message.RootDirectory != null && message.RootDirectory.Exists;
+        }
+
+        protected override void OnActivate()
+        {
+            _rootDirectory.SetRootDirectoryFromCommandLineArgumentsIfExists();
+
+            SelectRootDirectory.Activate();
+            AddNotebook.Activate();
+            ListNotebooks.Activate();
+            AddSection.Activate();
+            AddPage.Activate();
+        }
+
+        public bool IsAnySectionSelected
+        {
+            get { return _isAnySectionSelected; }
+            set
+            {
+                if (value == _isAnySectionSelected) return;
+                _isAnySectionSelected = value;
+                NotifyOfPropertyChange(() => IsAnySectionSelected);
+            }
         }
 
         public bool IsAnyNotebookSelected
@@ -104,6 +145,17 @@ namespace Delbert.Shell
                 if (value == _isRootDirectorySelected) return;
                 _isRootDirectorySelected = value;
                 NotifyOfPropertyChange(() => IsRootDirectorySelected);
+            }
+        }
+
+        public IScreen AddPage
+        {
+            get { return _addPage; }
+            set
+            {
+                if (Equals(value, _addPage)) return;
+                _addPage = value;
+                NotifyOfPropertyChange(() => AddPage);
             }
         }
 

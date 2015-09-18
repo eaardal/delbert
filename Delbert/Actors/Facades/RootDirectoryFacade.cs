@@ -44,7 +44,19 @@ namespace Delbert.Actors.Facades
 
             return null;
         }
-        
+
+        public void SetRootDirectoryFromCommandLineArgumentsIfExists()
+        {
+            var rootDirectoryActor = ActorSystem.ActorSelection(ActorRegistry.RootDirectory);
+
+            SetRootDirectoryFromCommandLineArgumentsIfExists(rootDirectoryActor);
+        }
+
+        public void SetRootDirectoryFromCommandLineArgumentsIfExists(ActorSelection actorSelection)
+        {
+            actorSelection.Tell(new RootDirectoryActor.SetRootDirectoryFromCommandLineArgumentsIfExists());
+        }
+
         public void SetRootDirectory(ActorSelection actor, DirectoryInfo directory)
         {
             actor.Tell(new RootDirectoryActor.SetRootDirectory(directory));

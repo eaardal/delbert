@@ -42,7 +42,7 @@ namespace Delbert.Startup
             
             DelbertConfig.ConfigureApplication(Container);
         }
-
+        
         protected override IEnumerable<Assembly> SelectAssemblies()
         {
             return new[] { Assembly.GetExecutingAssembly() };

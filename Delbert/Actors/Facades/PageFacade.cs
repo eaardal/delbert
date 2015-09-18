@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Immutable;
+using System.IO;
 using System.Threading.Tasks;
 using Akka.Actor;
 using Delbert.Actors.Facades.Abstract;
@@ -37,6 +38,18 @@ namespace Delbert.Actors.Facades
             LogFailure(answer);
 
             return ImmutableArray<PageDto>.Empty;
+        }
+
+        public void CreatePage(FileInfo pageFile)
+        {
+            var pageActor = ActorSystem.ActorOf(ActorRegistry.Page);
+
+            CreatePage(pageActor, pageFile);
+        }
+
+        public void CreatePage(IActorRef actor, FileInfo pageFile)
+        {
+            actor.Tell(new PageActor.CreatePage(pageFile));
         }
     }
 }

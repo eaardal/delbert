@@ -138,6 +138,11 @@
       <DependentUpon>ListNotebooksView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\Notebook\ListNotebooksViewModel.cs" />
+    <Compile Include="Components\Page\AddPageView.xaml.cs">
+      <DependentUpon>AddPageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Page\AddPageViewModel.cs" />
+    <Compile Include="Components\Page\IAddPageViewModel.cs" />
     <Compile Include="Components\Page\IListPagesViewModel.cs" />
     <Compile Include="Components\Page\ListPagesView.xaml.cs">
       <DependentUpon>ListPagesView.xaml</DependentUpon>
@@ -175,6 +180,7 @@
     <Compile Include="Infrastructure\ByteArrayExtensions.cs" />
     <Compile Include="Infrastructure\Converters\IsAnyNotebookSelectedToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\IsAnyPageSelectedToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Converters\IsAnySectionSelectedToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Converters\IsNotebookSelectedToBackgroundConverter.cs" />
     <Compile Include="Infrastructure\Converters\IsPageSelectedToBackgroundConverter.cs" />
     <Compile Include="Infrastructure\Converters\IsRootDirectorySelectedToVisibilityConverter.cs" />
@@ -187,6 +193,7 @@
     <Compile Include="Infrastructure\ProcessAdapter.cs" />
     <Compile Include="Infrastructure\TaskExtensions.cs" />
     <Compile Include="Messages\NotebookCreated.cs" />
+    <Compile Include="Messages\PageCreated.cs" />
     <Compile Include="Messages\RootDirectoryChanged.cs" />
     <Compile Include="Messages\SectionCreated.cs" />
     <Compile Include="Messages\SectionSelected.cs" />
@@ -243,6 +250,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Components\Notebook\ListNotebooksView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\Page\AddPageView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -47,17 +47,6 @@ namespace Delbert.Components.Notebook
                     }
                     Notebooks.Add(n);
                 });
-
-                //foreach (var notebook in notebooks)
-                //{
-                //    foreach (var existingNotebook in Notebooks)
-                //    {
-                //        if (notebook.Id == existingNotebook.Id)
-                //        {
-                //            existingNotebook.Sections = notebook.Sections;
-                //        }
-                //    }
-                //}
             });
         }
 
