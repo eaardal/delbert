@@ -36,7 +36,14 @@
                 <ContentControl x:Name="ListNotebooks"></ContentControl>
                 <ContentControl x:Name="AddNotebook"></ContentControl>
             </StackPanel>
-            <ContentControl Grid.Row="1" Grid.Column="1" x:Name="Editor" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }"></ContentControl>
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" MaxHeight="150"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <ContentControl Grid.Row="0" x:Name="ImageCarousel" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }"></ContentControl>
+                <ContentControl Grid.Row="1" x:Name="Editor" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }"></ContentControl>
+            </Grid>
             <StackPanel Grid.Row="1" Grid.Column="2" Visibility="{Binding Path=IsRootDirectorySelected, Converter={StaticResource RootDirectorySelectedToVisibilityConverter} }">
                 <ContentControl x:Name="ListPages"></ContentControl>
                 <ContentControl x:Name="AddPage" Visibility="{Binding Path=IsAnySectionSelected, Converter={StaticResource AnySectionSelectedToVisibilityConverter} }"></ContentControl>

@@ -86,7 +86,7 @@ namespace Delbert.Actors
 
         private ImmutableArray<FileInfo> GetFilesUnderDirectory(DirectoryInfo directory)
         {
-            return directory.GetFiles().ToImmutableArray();
+            return directory.GetFiles().Where(file => file.Extension == ".txt").ToImmutableArray();
         }
 
         #region Messages

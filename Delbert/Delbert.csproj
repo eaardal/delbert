@@ -82,6 +82,7 @@
     </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
@@ -108,17 +109,20 @@
     </ApplicationDefinition>
     <Compile Include="Actors\CommandLineArgsParserActor.cs" />
     <Compile Include="Actors\Facades\Abstract\ICommandLineArgsParserFacade.cs" />
+    <Compile Include="Actors\Facades\Abstract\IImageFacade.cs" />
     <Compile Include="Actors\Facades\Abstract\INotebookFacade.cs" />
     <Compile Include="Actors\Facades\Abstract\IPageFacade.cs" />
     <Compile Include="Actors\Facades\Abstract\IProcessFacade.cs" />
     <Compile Include="Actors\Facades\Abstract\IRootDirectoryFacade.cs" />
     <Compile Include="Actors\Facades\Abstract\ISectionFacade.cs" />
     <Compile Include="Actors\Facades\CommandLineArgsParserFacade.cs" />
+    <Compile Include="Actors\Facades\ImageFacade.cs" />
     <Compile Include="Actors\Facades\NotebookFacade.cs" />
     <Compile Include="Actors\Facades\PageFacade.cs" />
     <Compile Include="Actors\Facades\ProcessFacade.cs" />
     <Compile Include="Actors\Facades\RootDirectoryFacade.cs" />
     <Compile Include="Actors\Facades\SectionFacade.cs" />
+    <Compile Include="Actors\ImageActor.cs" />
     <Compile Include="Actors\ProcessActor.cs" />
     <Compile Include="Actors\SectionActor.cs" />
     <Compile Include="Actors\PageActor.cs" />
@@ -127,6 +131,11 @@
     </Compile>
     <Compile Include="Components\Editor\EditorViewModel.cs" />
     <Compile Include="Components\Editor\IEditorViewModel.cs" />
+    <Compile Include="Components\ImageCarousel\IImageCarouselViewModel.cs" />
+    <Compile Include="Components\ImageCarousel\ImageCarouselView.xaml.cs">
+      <DependentUpon>ImageCarouselView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\ImageCarousel\ImageCarouselViewModel.cs" />
     <Compile Include="Components\ISelectRootDirectoryViewModel.cs" />
     <Compile Include="Components\Notebook\AddNotebookView.xaml.cs">
       <DependentUpon>AddNotebookView.xaml</DependentUpon>
@@ -189,8 +198,11 @@
     <Compile Include="Infrastructure\Exceptions\UnexpectedActorAnswer.cs" />
     <Compile Include="Infrastructure\IActorSelectionAdapter.cs" />
     <Compile Include="Infrastructure\IActorSystemAdapter.cs" />
+    <Compile Include="Infrastructure\IBitmapImageAdapter.cs" />
+    <Compile Include="Infrastructure\BitmapImageAdapter.cs" />
     <Compile Include="Infrastructure\LoggingReceiveActor.cs" />
     <Compile Include="Infrastructure\ProcessAdapter.cs" />
+    <Compile Include="Infrastructure\StringExtensions.cs" />
     <Compile Include="Infrastructure\TaskExtensions.cs" />
     <Compile Include="Messages\NotebookCreated.cs" />
     <Compile Include="Messages\PageCreated.cs" />
@@ -242,6 +254,10 @@
     <Compile Include="Infrastructure\NotifyPropertyChangedBase.cs" />
     <Compile Include="Infrastructure\XamlHelpers.cs" />
     <Page Include="Components\Editor\EditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\ImageCarousel\ImageCarouselView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

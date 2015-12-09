@@ -8,6 +8,7 @@ using Delbert.Actors;
 using Delbert.Actors.Facades.Abstract;
 using Delbert.Components;
 using Delbert.Components.Editor;
+using Delbert.Components.ImageCarousel;
 using Delbert.Components.Notebook;
 using Delbert.Components.Page;
 using Delbert.Components.Section;
@@ -28,10 +29,12 @@ namespace Delbert.Shell
         private IScreen _editor;
         private IScreen _addNotebook;
         private IScreen _addSection;
+        private IScreen _imageCarousel;
+        private IScreen _addPage;
         private bool _isRootDirectorySelected;
         private bool _isAnyNotebookSelected;
-        private IScreen _addPage;
         private bool _isAnySectionSelected;
+        
 
         public MainViewModel(IIoC ioc, 
             ISelectRootDirectoryViewModel selectRootDirectoryViewModel,
@@ -42,7 +45,8 @@ namespace Delbert.Shell
             IAddNotebookViewModel addNotebookViewModel,
             IAddSectionViewModel addSectionViewModel,
             IAddPageViewModel addPageViewModel,
-            IRootDirectoryFacade rootDirectory
+            IRootDirectoryFacade rootDirectory,
+            IImageCarouselViewModel imageCarousel
             ) : base(ioc)
         {
             if (selectRootDirectoryViewModel == null)
@@ -72,8 +76,11 @@ namespace Delbert.Shell
             if (rootDirectory == null)
                 throw new ArgumentNullException(nameof(rootDirectory));
 
-            _rootDirectory = rootDirectory;
+            if (imageCarousel == null)
+                throw new ArgumentNullException(nameof(imageCarousel));
 
+            _rootDirectory = rootDirectory;
+            
             SelectRootDirectory = selectRootDirectoryViewModel;
             ListNotebooks = listNotebooksViewModel;
             ListSections = listSectionsViewModel;
@@ -82,7 +89,8 @@ namespace Delbert.Shell
             AddNotebook = addNotebookViewModel;
             AddSection = addSectionViewModel;
             AddPage = addPageViewModel;
-              
+            ImageCarousel = imageCarousel;
+
             MessageBus.Subscribe<RootDirectoryChanged>(OnNewRootDirectory);
             MessageBus.Subscribe<NotebookSelected>(OnNotebookSelected);
             MessageBus.Subscribe<SectionSelected>(OnSectionSelected);
@@ -113,6 +121,7 @@ namespace Delbert.Shell
             ListNotebooks.Activate();
             AddSection.Activate();
             AddPage.Activate();
+            ImageCarousel.Activate();
         }
 
         public bool IsAnySectionSelected
@@ -145,6 +154,17 @@ namespace Delbert.Shell
                 if (value == _isRootDirectorySelected) return;
                 _isRootDirectorySelected = value;
                 NotifyOfPropertyChange(() => IsRootDirectorySelected);
+            }
+        }
+
+        public IScreen ImageCarousel
+        {
+            get { return _imageCarousel; }
+            set
+            {
+                if (Equals(value, _imageCarousel)) return;
+                _imageCarousel = value;
+                NotifyOfPropertyChange(() => ImageCarousel);
             }
         }
 
